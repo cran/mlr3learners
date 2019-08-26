@@ -1,7 +1,15 @@
 #' @title Ranger Classification Learner
 #'
+#' @usage NULL
 #' @aliases mlr_learners_classif.ranger
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerClassif].
+#'
+#' @section Construction:
+#' ```
+#' LearnerClassifRanger$new()
+#' mlr3::mlr_learners$get("classif.ranger")
+#' mlr3::lrn("classif.ranger")
+#' ```
 #'
 #' @description
 #' Random classification forest.
@@ -13,18 +21,20 @@
 #' Journal of Statistical Software, 77(1), 1-17.
 #' \doi{10.18637/jss.v077.i01}.
 #'
-#' Breiman, L. (2001)
-#' Machine Learning 45: 5.
+#' Breiman, L. (2001).
+#' Random Forests.
+#' Machine Learning 45(1).
 #' \doi{10.1023/A:1010933404324}.
 #'
 #' @export
+#' @template seealso_learner
 #' @templateVar learner_name classif.ranger
 #' @template example
 LearnerClassifRanger = R6Class("LearnerClassifRanger", inherit = LearnerClassif,
   public = list(
-    initialize = function(id = "classif.ranger") {
+    initialize = function() {
       super$initialize(
-        id = id,
+        id = "classif.ranger",
         param_set = ParamSet$new(
           params = list(
             ParamInt$new(id = "num.trees", default = 500L, lower = 1L, tags = c("train", "predict")),
@@ -57,7 +67,7 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger", inherit = LearnerClassif,
     },
 
     train_internal = function(task) {
-      pars = self$param_set$get_values(tags ="train")
+      pars = self$param_set$get_values(tags = "train")
       invoke(ranger::ranger,
         dependent.variable.name = task$target_names,
         data = task$data(),
@@ -68,7 +78,7 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger", inherit = LearnerClassif,
     },
 
     predict_internal = function(task) {
-      pars = self$param_set$get_values(tags ="predict")
+      pars = self$param_set$get_values(tags = "predict")
       newdata = task$data(cols = task$feature_names)
       p = invoke(predict, self$model, data = newdata,
         predict.type = "response", .args = pars)

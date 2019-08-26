@@ -1,7 +1,15 @@
 #' @title Extreme Gradient Boosting Regression Learner
 #'
+#' @usage NULL
 #' @aliases mlr_learners_regr.xgboost
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerRegr].
+#'
+#' @section Construction:
+#' ```
+#' LearnerRegrSVM$new()
+#' mlr3::mlr_learners$get("regr.svm")
+#' mlr3::lrn("regr.svm")
+#' ```
 #'
 #' @description
 #' eXtreme Gradient Boosting regression.
@@ -14,13 +22,14 @@
 #' \doi{10.1145/2939672.2939785}.
 #'
 #' @export
+#' @template seealso_learner
 #' @templateVar learner_name regr.xgboost
 #' @template example
 LearnerRegrXgboost = R6Class("LearnerRegrXgboost", inherit = LearnerRegr,
   public = list(
-    initialize = function(id = "regr.xgboost") {
+    initialize = function() {
       super$initialize(
-        id = id,
+        id = "regr.xgboost",
         param_set = ParamSet$new(
           params = list(
             # we pass all of what goes in 'params' directly to ... of xgboost
@@ -75,7 +84,8 @@ LearnerRegrXgboost = R6Class("LearnerRegrXgboost", inherit = LearnerRegr,
     },
 
     train_internal = function(task) {
-      pars = self$param_set$get_values(tags ="train")
+
+      pars = self$param_set$get_values(tags = "train")
 
       if (is.null(pars$objective)) {
         pars$objective = "reg:linear"
@@ -97,7 +107,7 @@ LearnerRegrXgboost = R6Class("LearnerRegrXgboost", inherit = LearnerRegr,
     },
 
     predict_internal = function(task) {
-      pars = self$param_set$get_values(tags ="predict")
+      pars = self$param_set$get_values(tags = "predict")
 
       newdata = data.matrix(task$data(cols = task$feature_names))
       response = invoke(predict, self$model, newdata = newdata, .args = pars)

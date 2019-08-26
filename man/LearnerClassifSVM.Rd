@@ -6,14 +6,18 @@
 \alias{mlr_learners_classif.svm}
 \title{Support Vector Machine}
 \format{\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerClassif]{mlr3::LearnerClassif}.}
-\usage{
-LearnerClassifSVM
-}
 \description{
 A learner for a classification support vector machine implemented in \code{\link[e1071:svm]{e1071::svm()}}.
 }
+\section{Construction}{
+\preformatted{LearnerClassifSVM$new()
+mlr3::mlr_learners$get("classif.svm")
+mlr3::lrn("classif.svm")
+}
+}
+
 \examples{
-learner = mlr3::mlr_learners$get("classif.svm")
+learner = mlr3::lrn("classif.svm")
 print(learner)
 
 # available parameters:
@@ -23,5 +27,8 @@ learner$param_set$ids()
 Corinna Cortes and Vladimir Vapnik (1995).
 Machine Learning 20: 273.
 \doi{10.1007/BF00994018}.
+}
+\seealso{
+\link[mlr3misc:Dictionary]{Dictionary} of \link[mlr3:Learner]{Learners}: \link[mlr3:mlr_learners]{mlr3::mlr_learners}
 }
 \keyword{datasets}

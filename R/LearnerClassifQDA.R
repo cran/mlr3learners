@@ -1,7 +1,15 @@
 #' @title Quadratic Discriminant Analysis Classification Learner
 #'
+#' @usage NULL
 #' @aliases mlr_learners_classif.qda
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerClassif].
+#'
+#' @section Construction:
+#' ```
+#' LearnerClassifQDA$new()
+#' mlr3::mlr_learners$get("classif.qda")
+#' mlr3::lrn("classif.qda")
+#' ```
 #'
 #' @description
 #' Quadratic discriminant analysis.
@@ -14,13 +22,14 @@
 #' \doi{10.1007/978-0-387-21706-2}.
 #'
 #' @export
+#' @template seealso_learner
 #' @templateVar learner_name classif.qda
 #' @template example
 LearnerClassifQDA = R6Class("LearnerClassifQDA", inherit = LearnerClassif,
   public = list(
-    initialize = function(id = "classif.qda") {
+    initialize = function() {
       super$initialize(
-        id = id,
+        id = "classif.qda",
         param_set = ParamSet$new(
           params = list(
             ParamFct$new(id = "method", default = "moment", levels = c("moment", "mle", "mve", "t"), tags = "train"),
@@ -35,11 +44,11 @@ LearnerClassifQDA = R6Class("LearnerClassifQDA", inherit = LearnerClassif,
     },
 
     train_internal = function(task) {
-      invoke(MASS::qda, task$formula(), data = task$data(), .args = self$param_set$get_values(tags ="train"))
+      invoke(MASS::qda, task$formula(), data = task$data(), .args = self$param_set$get_values(tags = "train"))
     },
 
     predict_internal = function(task) {
-      pars = self$param_set$get_values(tags ="predict")
+      pars = self$param_set$get_values(tags = "predict")
       if (!is.null(pars$predict.method)) {
         pars$method = pars$predict.method
         pars$predict.method = NULL

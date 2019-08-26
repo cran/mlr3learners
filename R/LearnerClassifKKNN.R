@@ -1,20 +1,29 @@
 #' @title k-Nearest-Neighbor Classification Learner
 #'
+#' @usage NULL
 #' @aliases mlr_learners_classif.kknn
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerClassif].
+#'
+#' @section Construction:
+#' ```
+#' LearnerClassifKKNN$new()
+#' mlr3::mlr_learners$get("classif.kknn")
+#' mlr3::lrn("classif.kknn")
+#' ```
 #'
 #' @description
 #' k-Nearest-Neighbor classification.
 #' Calls [kknn::kknn()] from package \CRANpkg{kknn}.
 #'
 #' @export
+#' @template seealso_learner
 #' @templateVar learner_name classif.kknn
 #' @template example
 LearnerClassifKKNN = R6Class("LearnerClassifKKNN", inherit = LearnerClassif,
   public = list(
-    initialize = function(id = "classif.kknn") {
+    initialize = function() {
       super$initialize(
-        id = id,
+        id = "classif.kknn",
         param_set = ParamSet$new(
           params = list(
             ParamInt$new(id = "k", default = 7L, lower = 1L, tags = "predict"),
@@ -37,7 +46,7 @@ LearnerClassifKKNN = R6Class("LearnerClassifKKNN", inherit = LearnerClassif,
 
     predict_internal = function(task) {
       withr::with_package("kknn", { # https://github.com/KlausVigo/kknn/issues/16
-        m = invoke(kknn::kknn, formula = task$formula(), train = self$model, test = task$data(cols = task$feature_names), .args = self$param_set$get_values(tags ="predict"))
+        m = invoke(kknn::kknn, formula = task$formula(), train = self$model, test = task$data(cols = task$feature_names), .args = self$param_set$get_values(tags = "predict"))
       })
       PredictionClassif$new(task = task, response = m$fitted.values, prob = m$prob)
     }

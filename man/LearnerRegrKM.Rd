@@ -6,9 +6,6 @@
 \alias{mlr_learners_regr.km}
 \title{Kriging Regression Learner}
 \format{\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerRegr]{mlr3::LearnerRegr}.}
-\usage{
-LearnerRegrKM
-}
 \description{
 Kriging regression.
 Calls \code{\link[DiceKriging:km]{DiceKriging::km()}} from package \CRANpkg{DiceKriging}.
@@ -16,11 +13,18 @@ Calls \code{\link[DiceKriging:km]{DiceKriging::km()}} from package \CRANpkg{Dice
 \item The predict type hyperparameter "type" defaults to "SK" (simple Kriging).
 \item The additional hyperparameter \code{nugget.stability} is used to overwrite the hyperparameter \code{nugget} with \code{nugget.stability * var(y)} before training to improve the numerical stability.
 We recommend a value of \code{1e-8}.
-\item The additional hyperparameter \code{jitter} can be set to add \code{N(0, [jitter])}-distributed noise to the data before prediction to avoid perfect interpolation. We recommend a value if \code{1e-12}.
+\item The additional hyperparameter \code{jitter} can be set to add \code{N(0, [jitter])}-distributed noise to the data before prediction to avoid perfect interpolation. We recommend a value of \code{1e-12}.
 }
 }
+\section{Construction}{
+\preformatted{LearnerRegrKM$new()
+mlr3::mlr_learners$get("regr.km")
+mlr3::lrn("regr.km")
+}
+}
+
 \examples{
-learner = mlr3::mlr_learners$get("regr.km")
+learner = mlr3::lrn("regr.km")
 print(learner)
 
 # available parameters:
@@ -31,5 +35,8 @@ Olivier Roustant, David Ginsbourger, Yves Deville (2012).
 DiceKriging, DiceOptim: Two R Packages for the Analysis of Computer Experiments by Kriging-Based Metamodeling and Optimization.
 Journal of Statistical Software, 51(1), 1-55.
 \doi{10.18637/jss.v051.i01}.
+}
+\seealso{
+\link[mlr3misc:Dictionary]{Dictionary} of \link[mlr3:Learner]{Learners}: \link[mlr3:mlr_learners]{mlr3::mlr_learners}
 }
 \keyword{datasets}

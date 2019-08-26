@@ -6,15 +6,19 @@
 \alias{mlr_learners_regr.xgboost}
 \title{Extreme Gradient Boosting Regression Learner}
 \format{\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerRegr]{mlr3::LearnerRegr}.}
-\usage{
-LearnerRegrXgboost
-}
 \description{
 eXtreme Gradient Boosting regression.
 Calls \code{\link[xgboost:xgb.train]{xgboost::xgb.train()}} from package \CRANpkg{xgboost}.
 }
+\section{Construction}{
+\preformatted{LearnerRegrSVM$new()
+mlr3::mlr_learners$get("regr.svm")
+mlr3::lrn("regr.svm")
+}
+}
+
 \examples{
-learner = mlr3::mlr_learners$get("regr.xgboost")
+learner = mlr3::lrn("regr.xgboost")
 print(learner)
 
 # available parameters:
@@ -25,5 +29,8 @@ Tianqi Chen and Carlos Guestrin (2016).
 XGBoost: A Scalable Tree Boosting System.
 22nd SIGKDD Conference on Knowledge Discovery and Data Mining.
 \doi{10.1145/2939672.2939785}.
+}
+\seealso{
+\link[mlr3misc:Dictionary]{Dictionary} of \link[mlr3:Learner]{Learners}: \link[mlr3:mlr_learners]{mlr3::mlr_learners}
 }
 \keyword{datasets}

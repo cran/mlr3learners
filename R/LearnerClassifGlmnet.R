@@ -1,7 +1,15 @@
 #' @title GLM with Elastic Net Regularization Classification Learner
 #'
+#' @usage NULL
 #' @aliases mlr_learners_classif.glmnet
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerClassif].
+#'
+#' @section Construction:
+#' ```
+#' LearnerClassifGlmnet$new()
+#' mlr3::mlr_learners$get("classif.glmnet")
+#' mlr3::lrn("classif.glmnet")
+#' ```
 #'
 #' @description
 #' Generalized linear models with elastic net regularization.
@@ -14,13 +22,14 @@
 #' \doi{10.18637/jss.v033.i01}.
 #'
 #' @export
+#' @template seealso_learner
 #' @templateVar learner_name classif.glmnet
 #' @template example
 LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet", inherit = LearnerClassif,
   public = list(
-    initialize = function(id = "classif.glmnet") {
+    initialize = function() {
       super$initialize(
-        id = id,
+        id = "classif.glmnet",
         param_set = ParamSet$new(
           params = list(
             ParamDbl$new(id = "alpha", default = 1, lower = 0, upper = 1, tags = "train"),
@@ -62,7 +71,7 @@ LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet", inherit = LearnerClassif,
 
     train_internal = function(task) {
 
-      pars = self$param_set$get_values(tags ="train")
+      pars = self$param_set$get_values(tags = "train")
       data = as.matrix(task$data(cols = task$feature_names))
       target = as.matrix(task$data(cols = task$target_names))
       if ("weights" %in% task$properties) {
@@ -84,7 +93,7 @@ LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet", inherit = LearnerClassif,
     },
 
     predict_internal = function(task) {
-      pars = self$param_set$get_values(tags ="predict")
+      pars = self$param_set$get_values(tags = "predict")
       newdata = as.matrix(task$data(cols = task$feature_names))
 
       if (self$predict_type == "response") {

@@ -6,15 +6,19 @@
 \alias{mlr_learners_classif.glmnet}
 \title{GLM with Elastic Net Regularization Classification Learner}
 \format{\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerClassif]{mlr3::LearnerClassif}.}
-\usage{
-LearnerClassifGlmnet
-}
 \description{
 Generalized linear models with elastic net regularization.
 Calls \code{\link[glmnet:cv.glmnet]{glmnet::cv.glmnet()}} from package \CRANpkg{glmnet}.
 }
+\section{Construction}{
+\preformatted{LearnerClassifGlmnet$new()
+mlr3::mlr_learners$get("classif.glmnet")
+mlr3::lrn("classif.glmnet")
+}
+}
+
 \examples{
-learner = mlr3::mlr_learners$get("classif.glmnet")
+learner = mlr3::lrn("classif.glmnet")
 print(learner)
 
 # available parameters:
@@ -25,5 +29,8 @@ Jerome Friedman, Trevor Hastie, Robert Tibshirani (2010).
 Regularization Paths for Generalized Linear Models via Coordinate Descent.
 Journal of Statistical Software, 33(1), 1-22.
 \doi{10.18637/jss.v033.i01}.
+}
+\seealso{
+\link[mlr3misc:Dictionary]{Dictionary} of \link[mlr3:Learner]{Learners}: \link[mlr3:mlr_learners]{mlr3::mlr_learners}
 }
 \keyword{datasets}

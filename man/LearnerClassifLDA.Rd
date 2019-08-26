@@ -6,15 +6,19 @@
 \alias{mlr_learners_classif.lda}
 \title{Linear Discriminant Analysis Classification Learner}
 \format{\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerClassif]{mlr3::LearnerClassif}.}
-\usage{
-LearnerClassifLDA
-}
 \description{
 Linear discriminant analysis.
 Calls \code{\link[MASS:lda]{MASS::lda()}} from package \CRANpkg{MASS}.
 }
+\section{Construction}{
+\preformatted{LearnerClassifLDA$new()
+mlr3::mlr_learners$get("classif.lda")
+mlr3::lrn("classif.lda")
+}
+}
+
 \examples{
-learner = mlr3::mlr_learners$get("classif.lda")
+learner = mlr3::lrn("classif.lda")
 print(learner)
 
 # available parameters:
@@ -25,5 +29,8 @@ William N. Venables and Brian D. Ripley (2002).
 Modern Applied Statistics with S.
 Fourth Edition. Springer, New York. ISBN 0-387-95457-0.
 \doi{10.1007/978-0-387-21706-2}.
+}
+\seealso{
+\link[mlr3misc:Dictionary]{Dictionary} of \link[mlr3:Learner]{Learners}: \link[mlr3:mlr_learners]{mlr3::mlr_learners}
 }
 \keyword{datasets}

@@ -6,18 +6,25 @@
 \alias{mlr_learners_classif.log_reg}
 \title{Logistic Regression Classification Learner}
 \format{\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerClassif]{mlr3::LearnerClassif}.}
-\usage{
-LearnerClassifLogReg
-}
 \description{
 Classification via logistic regression.
 Calls \code{\link[stats:glm]{stats::glm()}}.
 }
+\section{Construction}{
+\preformatted{LearnerClassifLogReg$new()
+mlr3::mlr_learners$get("classif.log_reg")
+mlr3::lrn("classif.log_reg")
+}
+}
+
 \examples{
-learner = mlr3::mlr_learners$get("classif.log_reg")
+learner = mlr3::lrn("classif.log_reg")
 print(learner)
 
 # available parameters:
 learner$param_set$ids()
+}
+\seealso{
+\link[mlr3misc:Dictionary]{Dictionary} of \link[mlr3:Learner]{Learners}: \link[mlr3:mlr_learners]{mlr3::mlr_learners}
 }
 \keyword{datasets}

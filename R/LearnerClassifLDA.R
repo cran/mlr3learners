@@ -1,7 +1,15 @@
 #' @title Linear Discriminant Analysis Classification Learner
 #'
+#' @usage NULL
 #' @aliases mlr_learners_classif.lda
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerClassif].
+#'
+#' @section Construction:
+#' ```
+#' LearnerClassifLDA$new()
+#' mlr3::mlr_learners$get("classif.lda")
+#' mlr3::lrn("classif.lda")
+#' ```
 #'
 #' @description
 #' Linear discriminant analysis.
@@ -14,13 +22,14 @@
 #' \doi{10.1007/978-0-387-21706-2}.
 #'
 #' @export
+#' @template seealso_learner
 #' @templateVar learner_name classif.lda
 #' @template example
 LearnerClassifLDA = R6Class("LearnerClassifLDA", inherit = LearnerClassif,
   public = list(
-    initialize = function(id = "classif.lda") {
+    initialize = function() {
       super$initialize(
-        id = id,
+        id = "classif.lda",
         param_set = ParamSet$new(
           params = list(
             ParamFct$new(id = "method", default = "moment", levels = c("moment", "mle", "mve", "t"), tags = "train"),
@@ -36,17 +45,17 @@ LearnerClassifLDA = R6Class("LearnerClassifLDA", inherit = LearnerClassif,
 
     train_internal = function(task) {
       f = task$formula()
-      invoke(MASS::lda, f, data = task$data(), .args = self$param_set$get_values(tags ="train"))
+      invoke(MASS::lda, f, data = task$data(), .args = self$param_set$get_values(tags = "train"))
     },
 
     predict_internal = function(task) {
-      pars = self$param_set$get_values(tags ="predict")
+      pars = self$param_set$get_values(tags = "predict")
       if (!is.null(pars$predict.method)) {
         pars$method = pars$predict.method
         pars$predict.method = NULL
       }
       newdata = task$data(cols = task$feature_names)
-      p = invoke(predict, self$model, newdata = newdata, .args = self$param_set$get_values(tags ="predict"))
+      p = invoke(predict, self$model, newdata = newdata, .args = self$param_set$get_values(tags = "predict"))
 
       if (self$predict_type == "response") {
         PredictionClassif$new(task = task, response = p$class)

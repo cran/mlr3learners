@@ -1,7 +1,15 @@
 #' @title Kriging Regression Learner
 #'
+#' @usage NULL
 #' @aliases mlr_learners_regr.km
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerRegr].
+#'
+#' @section Construction:
+#' ```
+#' LearnerRegrKM$new()
+#' mlr3::mlr_learners$get("regr.km")
+#' mlr3::lrn("regr.km")
+#' ```
 #'
 #' @description
 #' Kriging regression.
@@ -10,7 +18,7 @@
 #' * The predict type hyperparameter "type" defaults to "SK" (simple Kriging).
 #' * The additional hyperparameter `nugget.stability` is used to overwrite the hyperparameter `nugget` with `nugget.stability * var(y)` before training to improve the numerical stability.
 #'   We recommend a value of `1e-8`.
-#' * The additional hyperparameter `jitter` can be set to add `N(0, [jitter])`-distributed noise to the data before prediction to avoid perfect interpolation. We recommend a value if `1e-12`.
+#' * The additional hyperparameter `jitter` can be set to add `N(0, [jitter])`-distributed noise to the data before prediction to avoid perfect interpolation. We recommend a value of `1e-12`.
 #'
 #' @references
 #' Olivier Roustant, David Ginsbourger, Yves Deville (2012).
@@ -19,13 +27,14 @@
 #' \doi{10.18637/jss.v051.i01}.
 #'
 #' @export
+#' @template seealso_learner
 #' @templateVar learner_name regr.km
 #' @template example
 LearnerRegrKM = R6Class("LearnerRegrKM", inherit = LearnerRegr,
   public = list(
-    initialize = function(id = "regr.km") {
+    initialize = function() {
       super$initialize(
-        id = id,
+        id = "regr.km",
         param_set = ParamSet$new(
           params = list(
             ParamFct$new(id = "covtype", default = "matern5_2", levels = c("gauss", "matern5_2", "matern3_2", "exp", "powexp"), tags = "train"),
@@ -44,7 +53,7 @@ LearnerRegrKM = R6Class("LearnerRegrKM", inherit = LearnerRegr,
     },
 
     train_internal = function(task) {
-      pars = self$param_set$get_values(tags ="train")
+      pars = self$param_set$get_values(tags = "train")
       data = as.matrix(task$data(cols = task$feature_names))
       truth = task$truth()
 
@@ -62,7 +71,7 @@ LearnerRegrKM = R6Class("LearnerRegrKM", inherit = LearnerRegr,
     },
 
     predict_internal = function(task) {
-      pars = self$param_set$get_values(tags ="predict")
+      pars = self$param_set$get_values(tags = "predict")
       newdata = as.matrix(task$data(cols = task$feature_names))
 
       jitter = pars$jitter

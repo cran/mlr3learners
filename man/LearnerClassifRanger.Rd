@@ -6,15 +6,19 @@
 \alias{mlr_learners_classif.ranger}
 \title{Ranger Classification Learner}
 \format{\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerClassif]{mlr3::LearnerClassif}.}
-\usage{
-LearnerClassifRanger
-}
 \description{
 Random classification forest.
 Calls \code{\link[ranger:ranger]{ranger::ranger()}} from package \CRANpkg{ranger}.
 }
+\section{Construction}{
+\preformatted{LearnerClassifRanger$new()
+mlr3::mlr_learners$get("classif.ranger")
+mlr3::lrn("classif.ranger")
+}
+}
+
 \examples{
-learner = mlr3::mlr_learners$get("classif.ranger")
+learner = mlr3::lrn("classif.ranger")
 print(learner)
 
 # available parameters:
@@ -26,8 +30,12 @@ ranger: A Fast Implementation of Random Forests for High Dimensional Data in C++
 Journal of Statistical Software, 77(1), 1-17.
 \doi{10.18637/jss.v077.i01}.
 
-Breiman, L. (2001)
-Machine Learning 45: 5.
+Breiman, L. (2001).
+Random Forests.
+Machine Learning 45(1).
 \doi{10.1023/A:1010933404324}.
+}
+\seealso{
+\link[mlr3misc:Dictionary]{Dictionary} of \link[mlr3:Learner]{Learners}: \link[mlr3:mlr_learners]{mlr3::mlr_learners}
 }
 \keyword{datasets}
