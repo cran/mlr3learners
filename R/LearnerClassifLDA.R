@@ -16,7 +16,7 @@
 #' Calls [MASS::lda()] from package \CRANpkg{MASS}.
 #'
 #' @references
-#' William N. Venables and Brian D. Ripley (2002).
+#' William N. Venables, Brian D. Ripley (2002).
 #' Modern Applied Statistics with S.
 #' Fourth Edition. Springer, New York. ISBN 0-387-95457-0.
 #' \doi{10.1007/978-0-387-21706-2}.
@@ -28,14 +28,14 @@
 LearnerClassifLDA = R6Class("LearnerClassifLDA", inherit = LearnerClassif,
   public = list(
     initialize = function() {
+      ps = ParamSet$new(list(
+        ParamFct$new("method", default = "moment", levels = c("moment", "mle", "mve", "t"), tags = "train"),
+        ParamFct$new("predict.method", default = "plug-in", levels = c("plug-in", "predictive", "debiased"), tags = "predict")
+      ))
+
       super$initialize(
         id = "classif.lda",
-        param_set = ParamSet$new(
-          params = list(
-            ParamFct$new(id = "method", default = "moment", levels = c("moment", "mle", "mve", "t"), tags = "train"),
-            ParamFct$new(id = "predict.method", default = "plug-in", levels = c("plug-in", "predictive", "debiased"), tags = "predict")
-          )
-        ),
+        param_set = ps,
         predict_types = c("response", "prob"),
         feature_types = c("logical", "integer", "numeric", "factor", "ordered"),
         properties = c("weights", "twoclass", "multiclass"),

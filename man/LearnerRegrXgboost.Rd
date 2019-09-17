@@ -11,9 +11,9 @@ eXtreme Gradient Boosting regression.
 Calls \code{\link[xgboost:xgb.train]{xgboost::xgb.train()}} from package \CRANpkg{xgboost}.
 }
 \section{Construction}{
-\preformatted{LearnerRegrSVM$new()
-mlr3::mlr_learners$get("regr.svm")
-mlr3::lrn("regr.svm")
+\preformatted{LearnerRegrXgboost$new()
+mlr3::mlr_learners$get("regr.xgboost")
+mlr3::lrn("regr.xgboost")
 }
 }
 
@@ -25,7 +25,7 @@ print(learner)
 learner$param_set$ids()
 }
 \references{
-Tianqi Chen and Carlos Guestrin (2016).
+Tianqi Chen, Carlos Guestrin (2016).
 XGBoost: A Scalable Tree Boosting System.
 22nd SIGKDD Conference on Knowledge Discovery and Data Mining.
 \doi{10.1145/2939672.2939785}.
