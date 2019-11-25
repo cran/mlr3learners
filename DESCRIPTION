@@ -1,6 +1,6 @@
 Package: mlr3learners
 Title: Recommended Learners for 'mlr3'
-Version: 0.1.4
+Version: 0.1.5
 Authors@R: 
     c(person(given = "Michel",
              family = "Lang",
@@ -39,12 +39,12 @@ Suggests: bibtex, checkmate, DiceKriging, e1071, glmnet, kknn, lgr,
 RdMacros: mlr3misc
 Encoding: UTF-8
 NeedsCompilation: no
-RoxygenNote: 6.1.1
-Packaged: 2019-10-29 08:27:53 UTC; michel
+RoxygenNote: 7.0.0
+Packaged: 2019-11-25 14:21:27 UTC; lang
 Author: Michel Lang [cre, aut] (<https://orcid.org/0000-0001-9754-0393>),
   Quay Au [aut] (<https://orcid.org/0000-0002-5252-8902>),
   Stefan Coors [aut] (<https://orcid.org/0000-0002-7465-2146>),
   Patrick Schratz [aut] (<https://orcid.org/0000-0003-0748-6624>)
 Maintainer: Michel Lang <michellang@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-10-29 08:50:02 UTC
+Date/Publication: 2019-11-25 15:00:05 UTC

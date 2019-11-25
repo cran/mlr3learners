@@ -1,3 +1,11 @@
+# mlr3learners 0.1.5
+
+* Added parameter and parameter dependencies to `regr.glmnet`, `regr.km`,
+  `regr.ranger`, `regr.svm`, `regr.xgboost`, `classif.glmnet`, `classif.lda`,
+  `classif.naivebayes`, `classif.qda`, `classif.ranger` and `classif.svm`.
+* `glmnet`: Added `relax` parameter (v3.0)
+* `xgboost`: Updated parameters for v0.90.0.2
+
 # mlr3learners 0.1.4
 
 * Fixed a bug in `*.xgboost` and `*.svm` which was triggered if columns
@@ -8,6 +16,9 @@
 * Changes to work with new `mlr3::Learner` API.
 * Improved documentation.
 * Added references.
+
+* add new parameters of xgboost version 0.90.2
+* add parameter dependencies for xgboost
 
 # mlr3learners 0.1.2
 
