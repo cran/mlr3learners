@@ -1,7 +1,7 @@
 #' @title GLM with Elastic Net Regularization Regression Learner
 #'
 #' @usage NULL
-#' @aliases mlr_learners_regr.glmnet
+#' @name mlr_learners_regr.glmnet
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerRegr].
 #'
 #' @section Construction:
@@ -14,7 +14,8 @@
 #' @description
 #' Generalized linear models with elastic net regularization.
 #' Calls [glmnet::cv.glmnet()] from package \CRANpkg{glmnet}.
-#' Hyperparameter `family` is set to `"gaussian"`.
+#'
+#' The default for hyperparameter `family` is changed to `"gaussian"`.
 #'
 #' @references
 #' \cite{mlr3learners}{friedman_2010}
@@ -69,7 +70,7 @@ LearnerRegrGlmnet = R6Class("LearnerRegrGlmnet", inherit = LearnerRegr,
       super$initialize(
         id = "regr.glmnet",
         param_set = ps,
-        feature_types = c("integer", "numeric"),
+        feature_types = c("logical", "integer", "numeric"),
         properties = "weights",
         packages = "glmnet",
         man = "mlr3learners::mlr_learners_regr.glmnet"

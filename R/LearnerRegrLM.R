@@ -1,7 +1,7 @@
 #' @title Linear Model Regression Learner
 #'
 #' @usage NULL
-#' @aliases mlr_learners_regr.lm
+#' @name mlr_learners_regr.lm
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerRegr].
 #'
 #' @section Construction:
@@ -25,7 +25,7 @@ LearnerRegrLM = R6Class("LearnerRegrLM", inherit = LearnerRegr,
       super$initialize(
         id = "regr.lm", ,
         predict_types = c("response", "se"),
-        feature_types = c("integer", "numeric", "factor"),
+        feature_types = c("logical", "integer", "numeric", "factor"),
         properties = "weights",
         packages = "stats",
         man = "mlr3learners::mlr_learners_regr.lm"

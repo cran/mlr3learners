@@ -1,7 +1,7 @@
 #' @title Kriging Regression Learner
 #'
 #' @usage NULL
-#' @aliases mlr_learners_regr.km
+#' @name mlr_learners_regr.km
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerRegr].
 #'
 #' @section Construction:
@@ -61,7 +61,7 @@ LearnerRegrKM = R6Class("LearnerRegrKM", inherit = LearnerRegr,
         id = "regr.km",
         param_set = ps,
         predict_types = c("response", "se"),
-        feature_types = c("integer", "numeric"),
+        feature_types = c("logical", "integer", "numeric"),
         packages = "DiceKriging",
         man = "mlr3learners::mlr_learners_regr.km"
       )

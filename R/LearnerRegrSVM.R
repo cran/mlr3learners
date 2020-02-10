@@ -1,7 +1,7 @@
 #' @title Support Vector Machine
 #'
 #' @usage NULL
-#' @aliases mlr_learners_regr.svm
+#' @name mlr_learners_regr.svm
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerRegr].
 #'
 #' @section Construction:
@@ -50,7 +50,7 @@ LearnerRegrSVM = R6Class("LearnerRegrSVM", inherit = LearnerRegr,
       super$initialize(
         id = "regr.svm",
         param_set = ps,
-        feature_types = c("integer", "numeric"),
+        feature_types = c("logical", "integer", "numeric"),
         packages = "e1071",
         man = "mlr3learners::mlr_learners_regr.svm"
       )

@@ -1,7 +1,7 @@
 #' @title Extreme Gradient Boosting Classification Learner
 #'
 #' @usage NULL
-#' @aliases mlr_learners_classif.xgboost
+#' @name mlr_learners_classif.xgboost
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerClassif].
 #'
 #' @section Construction:
@@ -14,6 +14,10 @@
 #' @description
 #' eXtreme Gradient Boosting classification.
 #' Calls [xgboost::xgb.train()] from package \CRANpkg{xgboost}.
+#'
+#' We changed the following defaults for this learner:
+#' * Verbosity is reduced by setting `verbose` to `0`.
+#' * Number of boosting iterations `nrounds` is set to `1`.
 #'
 #' @references
 #' \cite{mlr3learners}{chen_2016}
@@ -99,7 +103,7 @@ LearnerClassifXgboost = R6Class("LearnerClassifXgboost", inherit = LearnerClassi
         id = "classif.xgboost",
         predict_types = c("response", "prob"),
         param_set = ps,
-        feature_types = c("integer", "numeric"),
+        feature_types = c("logical", "integer", "numeric"),
         properties = c("weights", "missings", "twoclass", "multiclass", "importance"),
         packages = "xgboost",
         man = "mlr3learners::mlr_learners_classif.xgboost"

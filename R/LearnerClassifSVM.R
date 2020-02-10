@@ -1,7 +1,7 @@
 #' @title Support Vector Machine
 #'
 #' @usage NULL
-#' @aliases mlr_learners_classif.svm
+#' @name mlr_learners_classif.svm
 #' @format [R6::R6Class()] inheriting from [mlr3::LearnerClassif].
 #'
 #' @section Construction:
@@ -50,7 +50,7 @@ LearnerClassifSVM = R6Class("LearnerClassifSVM", inherit = LearnerClassif,
         id = "classif.svm",
         param_set = ps,
         predict_types = c("response", "prob"),
-        feature_types = c("integer", "numeric"),
+        feature_types = c("logical", "integer", "numeric"),
         properties = c("twoclass", "multiclass"),
         packages = "e1071",
         man = "mlr3learners::mlr_learners_classif.svm"
