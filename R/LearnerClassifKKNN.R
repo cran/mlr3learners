@@ -1,19 +1,13 @@
 #' @title k-Nearest-Neighbor Classification Learner
 #'
-#' @usage NULL
 #' @name mlr_learners_classif.kknn
-#' @format [R6::R6Class()] inheriting from [mlr3::LearnerClassif].
-#'
-#' @section Construction:
-#' ```
-#' LearnerClassifKKNN$new()
-#' mlr3::mlr_learners$get("classif.kknn")
-#' mlr3::lrn("classif.kknn")
-#' ```
 #'
 #' @description
 #' k-Nearest-Neighbor classification.
 #' Calls [kknn::kknn()] from package \CRANpkg{kknn}.
+#'
+#' @templateVar id classif.kknn
+#' @template section_dictionary_learner
 #'
 #' @references
 #' \cite{mlr3learners}{hechenbichler_2004}
@@ -24,16 +18,24 @@
 #'
 #' @export
 #' @template seealso_learner
-#' @templateVar learner_name classif.kknn
 #' @template example
-LearnerClassifKKNN = R6Class("LearnerClassifKKNN", inherit = LearnerClassif,
+LearnerClassifKKNN = R6Class("LearnerClassifKKNN",
+  inherit = LearnerClassif,
   public = list(
+
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       ps = ParamSet$new(list(
         ParamInt$new("k", default = 7L, lower = 1L, tags = "train"),
         ParamDbl$new("distance", default = 2, lower = 0, tags = "train"),
-        ParamFct$new("kernel", levels = c("rectangular", "triangular", "epanechnikov", "biweight", "triweight", "cos", "inv", "gaussian", "rank", "optimal"), default = "optimal", tags = "train"),
-        ParamLgl$new("scale", default = TRUE, tags = "train")
+        ParamFct$new("kernel",
+          levels = c(
+            "rectangular", "triangular", "epanechnikov",
+            "biweight", "triweight", "cos", "inv", "gaussian", "rank", "optimal"),
+          default = "optimal", tags = "train"),
+        ParamLgl$new("scale", default = TRUE, tags = "train"),
+        ParamUty$new("ykernel", default = NULL, tags = "train")
       ))
 
       super$initialize(
@@ -45,9 +47,11 @@ LearnerClassifKKNN = R6Class("LearnerClassifKKNN", inherit = LearnerClassif,
         packages = "kknn",
         man = "mlr3learners::mlr_learners_classif.kknn"
       )
-    },
+    }
+  ),
 
-    train_internal = function(task) {
+  private = list(
+    .train = function(task) {
       list(
         formula = task$formula(),
         data = task$data(),
@@ -55,12 +59,14 @@ LearnerClassifKKNN = R6Class("LearnerClassifKKNN", inherit = LearnerClassif,
       )
     },
 
-    predict_internal = function(task) {
+    .predict = function(task) {
       model = self$model
       newdata = task$data(cols = task$feature_names)
 
       with_package("kknn", { # https://github.com/KlausVigo/kknn/issues/16
-        p = invoke(kknn::kknn, formula = model$formula, train = model$data, test = newdata, .args = model$pars)
+        p = invoke(kknn::kknn,
+          formula = model$formula, train = model$data,
+          test = newdata, .args = model$pars)
       })
 
       if (self$predict_type == "response") {

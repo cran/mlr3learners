@@ -1,51 +1,73 @@
 #' @title Linear Model Regression Learner
 #'
-#' @usage NULL
 #' @name mlr_learners_regr.lm
-#' @format [R6::R6Class()] inheriting from [mlr3::LearnerRegr].
-#'
-#' @section Construction:
-#' ```
-#' LearnerRegrLM$new()
-#' mlr3::mlr_learners$get("regr.lm")
-#' mlr3::lrn("regr.lm")
-#' ```
 #'
 #' @description
 #' Ordinary linear regression.
 #' Calls [stats::lm()].
 #'
+#' @templateVar id regr.lm
+#' @template section_dictionary_learner
+#'
+#' @template section_contrasts
+#'
 #' @export
 #' @template seealso_learner
-#' @templateVar learner_name regr.lm
 #' @template example
-LearnerRegrLM = R6Class("LearnerRegrLM", inherit = LearnerRegr,
+LearnerRegrLM = R6Class("LearnerRegrLM",
+  inherit = LearnerRegr,
+
   public = list(
+
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
+      ps = ParamSet$new(list(
+        ParamLgl$new("x", default = FALSE, tags = "train"),
+        ParamLgl$new("y", default = FALSE, tags = "train"),
+        ParamLgl$new("model", default = TRUE, tags = "train"),
+        ParamLgl$new("qr", default = TRUE, tags = "train"),
+        ParamLgl$new("singular.ok", default = TRUE, tags = "train"),
+        ParamLgl$new("offset", tags = "train"),
+        ParamLgl$new("se.fit", default = FALSE, tags = "predict"),
+        ParamDbl$new("scale", default = NULL, special_vals = list(NULL), tags = "predict"),
+        ParamDbl$new("df", default = Inf, tags = "predict"),
+        ParamFct$new("interval", levels = c("none", "confidence", "prediction"), tags = "predict"),
+        ParamDbl$new("level", default = 0.95, tags = "predict"),
+        ParamUty$new("pred.var", tags = "predict")
+      ))
+
       super$initialize(
-        id = "regr.lm", ,
+        id = "regr.lm",
+        param_set = ps,
         predict_types = c("response", "se"),
         feature_types = c("logical", "integer", "numeric", "factor"),
         properties = "weights",
         packages = "stats",
         man = "mlr3learners::mlr_learners_regr.lm"
       )
-    },
+    }
+  ),
 
-    train_internal = function(task) {
+  private = list(
+    .train = function(task) {
       pars = self$param_set$get_values(tags = "train")
       if ("weights" %in% task$properties) {
         pars = insert_named(pars, list(weights = task$weights$weight))
       }
 
-      invoke(stats::lm, formula = task$formula(), data = task$data(), .args = pars)
+      mlr3misc::invoke(stats::lm,
+        formula = task$formula(), data = task$data(),
+        .args = pars, .opts = opts_default_contrasts)
     },
 
-    predict_internal = function(task) {
+    .predict = function(task) {
       newdata = task$data(cols = task$feature_names)
 
       if (self$predict_type == "response") {
-        PredictionRegr$new(task = task, response = predict(self$model, newdata = newdata, se.fit = FALSE))
+        PredictionRegr$new(task = task, response = predict(self$model,
+          newdata = newdata,
+          se.fit = FALSE))
       } else {
         pred = predict(self$model, newdata = newdata, se.fit = TRUE)
         PredictionRegr$new(task = task, response = pred$fit, se = pred$se.fit)

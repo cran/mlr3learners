@@ -1,32 +1,33 @@
 #' @title Support Vector Machine
 #'
-#' @usage NULL
 #' @name mlr_learners_regr.svm
-#' @format [R6::R6Class()] inheriting from [mlr3::LearnerRegr].
-#'
-#' @section Construction:
-#' ```
-#' LearnerRegrSVM$new()
-#' mlr3::mlr_learners$get("regr.svm")
-#' mlr3::lrn("regr.svm")
-#' ```
 #'
 #' @description
 #' A learner for a regression support vector machine implemented in [e1071::svm()].
+#'
+#' @templateVar id regr.svm
+#' @template section_dictionary_learner
 #'
 #' @references
 #' \cite{mlr3learners}{cortes_1995}
 #'
 #' @export
 #' @template seealso_learner
-#' @templateVar learner_name regr.svm
 #' @template example
-LearnerRegrSVM = R6Class("LearnerRegrSVM", inherit = LearnerRegr,
+LearnerRegrSVM = R6Class("LearnerRegrSVM",
+  inherit = LearnerRegr,
   public = list(
+
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       ps = ParamSet$new(list(
-        ParamFct$new("type", default = "eps-regression", levels = c("eps-regression", "nu-regression"), tags = "train"),
-        ParamFct$new("kernel", default = "radial", levels = c("linear", "polynomial", "radial", "sigmoid"), tags = "train"),
+        ParamFct$new("type",
+          default = "eps-regression",
+          levels = c("eps-regression", "nu-regression"), tags = "train"),
+        ParamFct$new("kernel", default = "radial", levels = c(
+          "linear", "polynomial",
+          "radial", "sigmoid"), tags = "train"),
         ParamInt$new("degree", default = 3L, lower = 1L, tags = "train"),
         ParamDbl$new("coef0", default = 0, tags = "train"),
         ParamDbl$new("cost", default = 1, lower = 0, tags = "train"),
@@ -54,9 +55,11 @@ LearnerRegrSVM = R6Class("LearnerRegrSVM", inherit = LearnerRegr,
         packages = "e1071",
         man = "mlr3learners::mlr_learners_regr.svm"
       )
-    },
+    }
+  ),
 
-    train_internal = function(task) {
+  private = list(
+    .train = function(task) {
       pars = self$param_set$get_values(tags = "train")
       data = as.matrix(task$data(cols = task$feature_names))
       self$state$feature_names = colnames(data)
@@ -64,7 +67,7 @@ LearnerRegrSVM = R6Class("LearnerRegrSVM", inherit = LearnerRegr,
       invoke(e1071::svm, x = data, y = task$truth(), .args = pars)
     },
 
-    predict_internal = function(task) {
+    .predict = function(task) {
       pars = self$param_set$get_values(tags = "predict")
       newdata = as.matrix(task$data(cols = task$feature_names))
       newdata = newdata[, self$state$feature_names, drop = FALSE]

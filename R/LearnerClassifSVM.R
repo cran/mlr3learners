@@ -1,34 +1,36 @@
 #' @title Support Vector Machine
 #'
-#' @usage NULL
 #' @name mlr_learners_classif.svm
-#' @format [R6::R6Class()] inheriting from [mlr3::LearnerClassif].
-#'
-#' @section Construction:
-#' ```
-#' LearnerClassifSVM$new()
-#' mlr3::mlr_learners$get("classif.svm")
-#' mlr3::lrn("classif.svm")
-#' ```
 #'
 #' @description
 #' A learner for a classification support vector machine implemented in [e1071::svm()].
+#'
+#' @template section_dictionary_learner
+#' @templateVar id classif.svm
 #'
 #' @references
 #' \cite{mlr3learners}{cortes_1995}
 #'
 #' @export
 #' @template seealso_learner
-#' @templateVar learner_name classif.svm
 #' @template example
-LearnerClassifSVM = R6Class("LearnerClassifSVM", inherit = LearnerClassif,
+LearnerClassifSVM = R6Class("LearnerClassifSVM",
+  inherit = LearnerClassif,
+
   public = list(
+
+    #' @description
+    #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       ps = ParamSet$new(list(
-        ParamFct$new("type", default = "C-classification", levels = c("C-classification", "nu-classification"), tags = "train"),
+        ParamFct$new("type",
+          default = "C-classification",
+          levels = c("C-classification", "nu-classification"), tags = "train"),
         ParamDbl$new("cost", default = 1, lower = 0, tags = "train"),
         ParamDbl$new("nu", default = 0.5, tags = "train"),
-        ParamFct$new("kernel", default = "radial", levels = c("linear", "polynomial", "radial", "sigmoid"), tags = "train"),
+        ParamFct$new("kernel",
+          default = "radial",
+          levels = c("linear", "polynomial", "radial", "sigmoid"), tags = "train"),
         ParamInt$new("degree", default = 3L, lower = 1L, tags = "train"),
         ParamDbl$new("coef0", default = 0, tags = "train"),
         ParamDbl$new("gamma", lower = 0, tags = "train"),
@@ -38,7 +40,8 @@ LearnerClassifSVM = R6Class("LearnerClassifSVM", inherit = LearnerClassif,
         ParamInt$new("cross", default = 0L, lower = 0L, tags = "train"), # tunable = FALSE),
         ParamLgl$new("fitted", default = TRUE, tags = "train"), # tunable = FALSE),
         ParamUty$new("scale", default = TRUE, tags = "train"), # , tunable = TRUE)
-        ParamUty$new("class.weights", default = NULL, tags = "train")
+        ParamUty$new("class.weights", default = NULL, tags = "train"),
+        ParamLgl$new("decision.values", default = FALSE, tags = "predict")
       ))
       ps$add_dep("cost", "type", CondEqual$new("C-classification"))
       ps$add_dep("nu", "type", CondEqual$new("nu-classification"))
@@ -55,9 +58,11 @@ LearnerClassifSVM = R6Class("LearnerClassifSVM", inherit = LearnerClassif,
         packages = "e1071",
         man = "mlr3learners::mlr_learners_classif.svm"
       )
-    },
+    }
+  ),
 
-    train_internal = function(task) {
+  private = list(
+    .train = function(task) {
       pars = self$param_set$get_values(tags = "train")
       data = as.matrix(task$data(cols = task$feature_names))
       self$state$feature_names = colnames(data)
@@ -70,13 +75,16 @@ LearnerClassifSVM = R6Class("LearnerClassifSVM", inherit = LearnerClassif,
       )
     },
 
-    predict_internal = function(task) {
+    .predict = function(task) {
       pars = self$param_set$get_values(tags = "predict")
       newdata = as.matrix(task$data(cols = task$feature_names))
       newdata = newdata[, self$state$feature_names, drop = FALSE]
-      p = invoke(predict, self$model, newdata = newdata, probability = (self$predict_type == "prob"), .args = pars)
+      p = mlr3misc::invoke(predict, self$model,
+        newdata = newdata,
+        probability = (self$predict_type == "prob"), .args = pars)
 
-      PredictionClassif$new(task = task,
+      PredictionClassif$new(
+        task = task,
         response = as.character(p),
         prob = attr(p, "probabilities") # is NULL if not requested during predict
       )
