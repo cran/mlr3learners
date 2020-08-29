@@ -15,7 +15,6 @@
 "_PACKAGE"
 
 register_mlr3 = function() {
-
   x = utils::getFromNamespace("mlr_learners", ns = "mlr3")
 
   # classification learners
@@ -40,6 +39,12 @@ register_mlr3 = function() {
   x$add("regr.ranger", LearnerRegrRanger)
   x$add("regr.svm", LearnerRegrSVM)
   x$add("regr.xgboost", LearnerRegrXgboost)
+
+  # survival learners
+  x$add("surv.glmnet", LearnerSurvGlmnet)
+  x$add("surv.cv_glmnet", LearnerSurvCVGlmnet)
+  x$add("surv.xgboost", LearnerSurvXgboost)
+  x$add("surv.ranger", LearnerSurvRanger)
 }
 
 .onLoad = function(libname, pkgname) { # nolint
@@ -53,3 +58,5 @@ register_mlr3 = function() {
   pkgname = vapply(hooks, function(x) environment(x)$pkgname, NA_character_)
   setHook(event, hooks[pkgname != "mlr3learners"], action = "replace")
 } # nocov end
+
+leanify_package()

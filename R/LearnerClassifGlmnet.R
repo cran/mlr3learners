@@ -43,7 +43,7 @@ LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet",
         ParamInt$new("dfmax", lower = 0L, tags = "train"),
         ParamInt$new("pmax", lower = 0L, tags = "train"),
         ParamInt$new("exclude", lower = 1L, tags = "train"),
-        ParamDbl$new("penalty.factor", lower = 0, upper = 1, tags = "train"),
+        ParamUty$new("penalty.factor", tags = "train"),
         ParamUty$new("lower.limits", tags = "train"),
         ParamUty$new("upper.limits", tags = "train"),
         ParamInt$new("maxit", default = 100000L, lower = 1L, tags = "train"),
@@ -65,12 +65,14 @@ LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet",
         ParamDbl$new("fdev", default = 1.0e-5, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("devmax", default = 0.999, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("eps", default = 1.0e-6, lower = 0, upper = 1, tags = "train"),
+        ParamDbl$new("epsnr", default = 1.0e-8, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("big", default = 9.9e35, tags = "train"),
         ParamInt$new("mnlam", default = 5, lower = 1L, tags = "train"),
         ParamDbl$new("pmin", default = 1.0e-9, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("exmx", default = 250.0, tags = "train"),
         ParamDbl$new("prec", default = 1e-10, tags = "train"),
         ParamInt$new("mxit", default = 100L, lower = 1L, tags = "train"),
+        ParamInt$new("mxitnr", default = 25L, lower = 1L, tags = "train"),
         ParamUty$new("newoffset", tags = "predict"),
         ParamLgl$new("exact", default = FALSE, tags = "predict"),
         ParamDbl$new("gamma", default = 1, tags = "predict")
@@ -123,12 +125,12 @@ LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet",
       }
 
       if (self$predict_type == "response") {
-        response = mlr3misc::invoke(predict, self$model,
+        response = mlr3misc::invoke(stats::predict, self$model,
           newx = newdata, type = "class",
           .args = pars)
-        PredictionClassif$new(task = task, response = drop(response))
+        mlr3::PredictionClassif$new(task = task, response = drop(response))
       } else {
-        prob = mlr3misc::invoke(predict, self$model,
+        prob = mlr3misc::invoke(stats::predict, self$model,
           newx = newdata, type = "response",
           .args = pars)
 
@@ -138,7 +140,7 @@ LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet",
         } else {
           prob = prob[, , 1L]
         }
-        PredictionClassif$new(task = task, prob = prob)
+        mlr3::PredictionClassif$new(task = task, prob = prob)
       }
     }
   )

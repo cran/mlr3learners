@@ -50,7 +50,7 @@ LearnerRegrGlmnet = R6Class("LearnerRegrGlmnet",
         ParamInt$new("dfmax", lower = 0L, tags = "train"),
         ParamInt$new("pmax", lower = 0L, tags = "train"),
         ParamInt$new("exclude", lower = 1L, tags = "train"),
-        ParamDbl$new("penalty.factor", lower = 0, upper = 1, tags = "train"),
+        ParamUty$new("penalty.factor", tags = "train"),
         ParamUty$new("lower.limits", tags = "train"),
         ParamUty$new("upper.limits", tags = "train"),
         ParamInt$new("maxit", default = 100000L, lower = 1L, tags = "train"),
@@ -68,12 +68,14 @@ LearnerRegrGlmnet = R6Class("LearnerRegrGlmnet",
         ParamDbl$new("fdev", default = 1.0e-5, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("devmax", default = 0.999, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("eps", default = 1.0e-6, lower = 0, upper = 1, tags = "train"),
+        ParamDbl$new("epsnr", default = 1.0e-8, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("big", default = 9.9e35, tags = "train"),
         ParamInt$new("mnlam", default = 5L, lower = 1L, tags = "train"),
         ParamDbl$new("pmin", default = 1.0e-9, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("exmx", default = 250.0, tags = "train"),
         ParamDbl$new("prec", default = 1e-10, tags = "train"),
         ParamInt$new("mxit", default = 100L, lower = 1L, tags = "train"),
+        ParamInt$new("mxitnr", default = 25L, lower = 1L, tags = "train"),
         ParamUty$new("newoffset", tags = "predict"),
         ParamDbl$new("predict.gamma", default = 1, tags = "predict"),
         ParamLgl$new("exact", default = FALSE, tags = "predict"),
@@ -127,10 +129,10 @@ LearnerRegrGlmnet = R6Class("LearnerRegrGlmnet",
         pars$s = self$param_set$default$s
       }
 
-      response = mlr3misc::invoke(predict, self$model,
+      response = mlr3misc::invoke(stats::predict, self$model,
         newx = newdata,
         type = "response", .args = pars)
-      PredictionRegr$new(task = task, response = drop(response))
+      mlr3::PredictionRegr$new(task = task, response = drop(response))
     }
   )
 )
