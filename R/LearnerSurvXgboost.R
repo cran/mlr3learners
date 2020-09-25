@@ -132,7 +132,8 @@ LearnerSurvXgboost = R6Class("LearnerSurvXgboost",
         predict_types = c("crank", "lp"),
         feature_types = c("logical", "integer", "numeric"),
         properties = c("weights", "missings", "importance"),
-        packages = c("xgboost")
+        packages = c("xgboost"),
+        man = "mlr3learners::mlr_learners_surv.xgboost"
       )
     },
 
@@ -188,8 +189,7 @@ LearnerSurvXgboost = R6Class("LearnerSurvXgboost",
       newdata = newdata[, model$feature_names, drop = FALSE]
       lp = log(mlr3misc::invoke(stats::predict, model, newdata = newdata, .args = pars))
 
-      mlr3proba::PredictionSurv$new(task = task, crank = lp, lp = lp)
-
+      list(crank = lp, lp = lp)
     }
   )
 )

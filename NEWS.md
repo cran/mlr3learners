@@ -1,3 +1,10 @@
+# mlr3learners 0.4.0
+
+- Fixed a potential label switch in `classif.glmnet` and `classif.cv_glmnet`
+  with `predict_type` set to `"prob"` (#155).
+- Fixed learners from package `glmnet` to be more robust if the order of
+  features has changed between train and predict.
+
 # mlr3learners 0.3.0
 
 - The `$model` slot of the {kknn} learner now returns a list containing some

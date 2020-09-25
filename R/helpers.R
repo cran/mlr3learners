@@ -7,3 +7,16 @@ pvec2mat = function(p, levs) {
 }
 
 opts_default_contrasts = list(contrasts = c("contr.treatment", "contr.poly"))
+
+
+ordered_features = function(task, feature_names) {
+  fn = intersect(feature_names, task$feature_names)
+  task$data(cols = fn)
+}
+
+glmnet_feature_names = function(model) {
+  beta = model$beta
+  if (is.null(beta))
+    beta = model$glmnet.fit$beta
+  rownames(if (is.list(beta)) beta[[1L]] else beta)
+}

@@ -117,7 +117,7 @@ LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet",
 
     .predict = function(task) {
       pars = self$param_set$get_values(tags = "predict")
-      newdata = as.matrix(task$data(cols = task$feature_names))
+      newdata = as.matrix(ordered_features(task, glmnet_feature_names(self$model)))
 
       # only predict for one instance of 's' and not for 100
       if (is.null(pars$s)) {
@@ -128,19 +128,20 @@ LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet",
         response = mlr3misc::invoke(stats::predict, self$model,
           newx = newdata, type = "class",
           .args = pars)
-        mlr3::PredictionClassif$new(task = task, response = drop(response))
+        list(response = drop(response))
       } else {
         prob = mlr3misc::invoke(stats::predict, self$model,
           newx = newdata, type = "response",
           .args = pars)
 
         if (length(task$class_names) == 2L) {
-          prob = cbind(prob, 1 - prob)
-          colnames(prob) = task$class_names
+          # glmnet returns probabilities for the **last** alphabetical class label
+          prob = cbind(1 - prob, prob)
+          colnames(prob) = sort(task$class_names)
         } else {
           prob = prob[, , 1L]
         }
-        mlr3::PredictionClassif$new(task = task, prob = prob)
+        list(prob = prob)
       }
     }
   )
