@@ -1,6 +1,6 @@
 Package: mlr3learners
 Title: Recommended Learners for 'mlr3'
-Version: 0.4.1
+Version: 0.4.2
 Authors@R: 
     c(person(given = "Michel",
              family = "Lang",
@@ -40,11 +40,11 @@ Suggests: checkmate, DiceKriging, distr6, e1071, glmnet, kknn, knitr,
 Encoding: UTF-8
 NeedsCompilation: no
 RoxygenNote: 7.1.1
-Packaged: 2020-10-07 09:04:09 UTC; lang
+Packaged: 2020-11-11 09:54:42 UTC; lang
 Author: Michel Lang [cre, aut] (<https://orcid.org/0000-0001-9754-0393>),
   Quay Au [aut] (<https://orcid.org/0000-0002-5252-8902>),
   Stefan Coors [aut] (<https://orcid.org/0000-0002-7465-2146>),
   Patrick Schratz [aut] (<https://orcid.org/0000-0003-0748-6624>)
 Maintainer: Michel Lang <michellang@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-10-07 10:00:02 UTC
+Date/Publication: 2020-11-11 13:40:22 UTC
