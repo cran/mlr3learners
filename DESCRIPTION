@@ -1,6 +1,6 @@
 Package: mlr3learners
 Title: Recommended Learners for 'mlr3'
-Version: 0.4.5
+Version: 0.5.0
 Authors@R: 
     c(person(given = "Michel",
              family = "Lang",
@@ -33,19 +33,19 @@ URL: https://mlr3learners.mlr-org.com,
         https://github.com/mlr-org/mlr3learners
 BugReports: https://github.com/mlr-org/mlr3learners/issues
 Depends: R (>= 3.1.0), mlr3 (>= 0.11.0)
-Imports: data.table, mlr3misc (>= 0.5.0), paradox, R6
-Suggests: checkmate, DiceKriging, distr6, e1071, glmnet, kknn, knitr,
-        lgr, MASS, mlr3proba (>= 0.2.5), nnet, pracma, ranger, rgenoud,
-        rmarkdown, testthat (>= 3.0.0), xgboost
+Imports: checkmate, data.table, mlr3misc (>= 0.5.0), paradox, R6
+Suggests: DiceKriging, distr6, e1071, glmnet, kknn, knitr, lgr, MASS,
+        mlr3proba (>= 0.2.5), nnet, pracma, ranger, rgenoud, rmarkdown,
+        testthat (>= 3.0.0), xgboost
 Encoding: UTF-8
 NeedsCompilation: no
 Config/testthat/edition: 3
 RoxygenNote: 7.1.1
-Packaged: 2021-03-18 12:33:44 UTC; lang
+Packaged: 2021-08-17 07:53:50 UTC; lang
 Author: Michel Lang [cre, aut] (<https://orcid.org/0000-0001-9754-0393>),
   Quay Au [aut] (<https://orcid.org/0000-0002-5252-8902>),
   Stefan Coors [aut] (<https://orcid.org/0000-0002-7465-2146>),
   Patrick Schratz [aut] (<https://orcid.org/0000-0003-0748-6624>)
 Maintainer: Michel Lang <michellang@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-03-18 13:20:03 UTC
+Date/Publication: 2021-08-17 16:40:02 UTC
