@@ -13,12 +13,12 @@
 #'   - Reason for change: Conflicting with parallelization via \CRANpkg{future}.
 #' - `mtry`:
 #'   - This hyperparameter can alternatively be set via our hyperparameter `mtry.ratio`
-#'     as `mtry = max(floor(mtry.ratio * n_features), 1)`.
+#'     as `mtry = max(ceiling(mtry.ratio * n_features), 1)`.
 #'     Note that `mtry` and `mtry.ratio` are mutually exclusive.
 #'
 #'
-#' @template section_dictionary_learner
 #' @templateVar id classif.ranger
+#' @template learner
 #'
 #' @references
 #' `r format_bib("wright_2017", "breiman_2001")`
@@ -38,7 +38,7 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
         # FIXME: only works if predict_type == "se". How to set dependency?
         alpha                        = p_dbl(default = 0.5, tags = "train"),
         always.split.variables       = p_uty(tags = "train"),
-        class.weights                = p_dbl(default = NULL, special_vals = list(NULL), tags = "train"),
+        class.weights                = p_uty(default = NULL, tags = "train"),
         holdout                      = p_lgl(default = FALSE, tags = "train"),
         importance                   = p_fct(c("none", "impurity", "impurity_corrected", "permutation"), tags = "train"),
         keep.inbag                   = p_lgl(default = FALSE, tags = "train"),
@@ -50,7 +50,7 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
         mtry.ratio                   = p_dbl(lower = 0, upper = 1, tags = "train"),
         num.random.splits            = p_int(1L, default = 1L, tags = "train"),
         num.threads                  = p_int(1L, default = 1L, tags = c("train", "predict", "threads")),
-        num.trees                    = p_int(1L, default = 500L, tags = c("train", "predict")),
+        num.trees                    = p_int(1L, default = 500L, tags = c("train", "predict", "hotstart")),
         oob.error                    = p_lgl(default = TRUE, tags = "train"),
         regularization.factor        = p_uty(default = 1, tags = "train"),
         regularization.usedepth      = p_lgl(default = FALSE, tags = "train"),
@@ -60,8 +60,8 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
         save.memory                  = p_lgl(default = FALSE, tags = "train"),
         scale.permutation.importance = p_lgl(default = FALSE, tags = "train"),
         se.method                    = p_fct(c("jack", "infjack"), default = "infjack", tags = "predict"),
-        seed                         = p_int(default = NULL, special_vals = list(NULL), tags = "train"),
-        split.select.weights         = p_dbl(0, 1, tags = "train"),
+        seed                         = p_int(default = NULL, special_vals = list(NULL), tags = c("train", "predict")),
+        split.select.weights         = p_uty(default = NULL, tags = "train"),
         splitrule                    = p_fct(c("gini", "extratrees"), default = "gini", tags = "train"),
         verbose                      = p_lgl(default = TRUE, tags = c("train", "predict")),
         write.forest                 = p_lgl(default = TRUE, tags = "train")
@@ -77,8 +77,8 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
         param_set = ps,
         predict_types = c("response", "prob"),
         feature_types = c("logical", "integer", "numeric", "character", "factor", "ordered"),
-        properties = c("weights", "twoclass", "multiclass", "importance", "oob_error"),
-        packages = "ranger",
+        properties = c("weights", "twoclass", "multiclass", "importance", "oob_error", "hotstart_backward"),
+        packages = c("mlr3learners", "ranger"),
         man = "mlr3learners::mlr_learners_classif.ranger"
       )
     },
@@ -115,7 +115,7 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
   private = list(
     .train = function(task) {
       pv = self$param_set$get_values(tags = "train")
-      pv = ranger_get_mtry(pv, task)
+      pv = convert_ratio(pv, "mtry", "mtry.ratio", length(task$feature_names))
       invoke(ranger::ranger,
         dependent.variable.name = task$target_names,
         data = task$data(),
@@ -127,7 +127,7 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
 
     .predict = function(task) {
       pv = self$param_set$get_values(tags = "predict")
-      newdata = task$data(cols = task$feature_names)
+      newdata = ordered_features(task, self)
 
       prediction = invoke(predict,
         self$model, data = newdata,
@@ -138,6 +138,12 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
       } else {
         list(prob = prediction$predictions)
       }
+    },
+
+    .hotstart = function(task) {
+      model = self$model
+      model$num.trees = self$param_set$values$num.trees
+      model
     }
   )
 )

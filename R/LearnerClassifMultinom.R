@@ -7,7 +7,7 @@
 #' Calls [nnet::multinom()] from package \CRANpkg{nnet}.
 #'
 #' @templateVar id classif.multinom
-#' @template section_dictionary_learner
+#' @template learner
 #'
 #' @export
 #' @template seealso_learner
@@ -25,12 +25,20 @@ LearnerClassifMultinom = R6Class("LearnerClassifMultinom",
         abstol   = p_dbl(default = 1.0e-4, tags = "train"),
         censored = p_lgl(default = FALSE, tags = "train"),
         decay    = p_dbl(default = 0, tags = "train"),
+        entropy  = p_lgl(default = FALSE, tags = "train"),
+        mask     = p_uty(tags = "train"),
         maxit    = p_int(1L, default = 100L, tags = "train"),
+        MaxNWts  = p_int(1L, default = 1000L, tags = "train"),
         model    = p_lgl(default = FALSE, tags = "train"),
+        linout   = p_lgl(default = FALSE, tags = "train"),
         rang     = p_dbl(default = 0.7, tags = "train"),
         reltol   = p_dbl(default = 1.0e-8, tags = "train"),
+        size     = p_int(1L, tags = "train"),
+        skip     = p_lgl(default = FALSE, tags = "train"),
+        softmax  = p_lgl(default = FALSE, tags = "train"),
         summ     = p_fct(c("0", "1", "2", "3"), default = "0", tags = "train"),
-        trace    = p_lgl(default = TRUE, tags = "train")
+        trace    = p_lgl(default = TRUE, tags = "train"),
+        Wts      = p_uty(tags = "train")
       )
 
       super$initialize(
@@ -39,7 +47,7 @@ LearnerClassifMultinom = R6Class("LearnerClassifMultinom",
         predict_types = c("response", "prob"),
         feature_types = c("logical", "integer", "numeric", "factor"),
         properties = c("weights", "twoclass", "multiclass", "loglik"),
-        packages = "nnet",
+        packages = c("mlr3learners", "nnet"),
         man = "mlr3learners::mlr_learners_classif.multinom"
       )
     },
@@ -54,7 +62,6 @@ LearnerClassifMultinom = R6Class("LearnerClassifMultinom",
   private = list(
     .train = function(task) {
       pv = self$param_set$get_values(tags = "train")
-      data = task$data()
 
       if ("weights" %in% task$properties) {
         pv$weights = task$weights$weight
@@ -63,11 +70,15 @@ LearnerClassifMultinom = R6Class("LearnerClassifMultinom",
         pv$summ = as.integer(pv$summ)
       }
 
-      invoke(nnet::multinom, data = data, .args = pv)
+      # nnet does not handle formulas without env, we need to create it
+      # here to work with `summary()`.
+      pv$formula = reformulate(".", response = task$target_names)
+
+      invoke(nnet::multinom, data = task$data(), .args = pv)
     },
 
     .predict = function(task) {
-      newdata = task$data(cols = task$feature_names)
+      newdata = ordered_features(task, self)
 
       if (self$predict_type == "response") {
         response = invoke(predict, self$model, newdata = newdata, type = "class")

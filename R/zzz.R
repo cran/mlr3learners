@@ -4,7 +4,7 @@
 #' @import checkmate
 #' @importFrom R6 R6Class
 #' @importFrom mlr3 mlr_learners LearnerClassif LearnerRegr
-#' @importFrom stats predict
+#' @importFrom stats predict reformulate
 #'
 #' @description
 #' More learners are implemented in the [mlr3extralearners package](https://github.com/mlr-org/mlr3extralearners).
@@ -48,15 +48,7 @@ register_mlr3 = function() {
 }
 
 .onLoad = function(libname, pkgname) { # nolint
-  register_mlr3()
-  setHook(packageEvent("mlr3", "onLoad"), function(...) register_mlr3(), action = "append")
-} # nocov end
-
-.onUnload = function(libpath) { # nolint
-  event = packageEvent("mlr3", "onLoad")
-  hooks = getHook(event)
-  pkgname = vapply(hooks, function(x) environment(x)$pkgname, NA_character_)
-  setHook(event, hooks[pkgname != "mlr3learners"], action = "replace")
+  register_namespace_callback(pkgname, "mlr3", register_mlr3)
 } # nocov end
 
 leanify_package()

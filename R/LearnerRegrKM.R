@@ -14,8 +14,8 @@
 #'   `N(0, [jitter])`-distributed noise to the data before prediction to avoid
 #'   perfect interpolation. We recommend a value of `1e-12`.
 #'
-#' @template section_dictionary_learner
 #' @templateVar id regr.km
+#' @template learner
 #'
 #' @references
 #' `r format_bib("roustant_2012")`
@@ -69,7 +69,7 @@ LearnerRegrKM = R6Class("LearnerRegrKM",
         param_set = ps,
         predict_types = c("response", "se"),
         feature_types = c("logical", "integer", "numeric"),
-        packages = "DiceKriging",
+        packages = c("mlr3learners", "DiceKriging"),
         man = "mlr3learners::mlr_learners_regr.km"
       )
     }
@@ -103,12 +103,16 @@ LearnerRegrKM = R6Class("LearnerRegrKM",
 
     .predict = function(task) {
       pv = self$param_set$get_values(tags = "predict")
-      newdata = as.matrix(task$data(cols = task$feature_names))
+      newdata = as.matrix(ordered_features(task, self))
 
       jitter = pv$jitter
       if (!is.null(jitter) && jitter > 0) {
         newdata = newdata + stats::rnorm(length(newdata), mean = 0, sd = jitter)
       }
+
+      # this is required to allow utf8 names
+      # alternatively, we could set checkNames = FALSE
+      colnames(newdata) = make.names(colnames(newdata), unique = TRUE)
 
       p = invoke(DiceKriging::predict.km,
         self$model,

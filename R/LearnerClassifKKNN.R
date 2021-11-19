@@ -9,7 +9,7 @@
 #' @template note_kknn
 #'
 #' @templateVar id classif.kknn
-#' @template section_dictionary_learner
+#' @template learner
 #'
 #' @references
 #' `r format_bib("hechenbichler_2004", "samworth_2012", "cover_1967")`
@@ -25,7 +25,7 @@ LearnerClassifKKNN = R6Class("LearnerClassifKKNN",
     #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       ps = ps(
-        k        = p_int(default = 7L, lower = 1L, tags = c("required", "train")),
+        k        = p_int(default = 7L, lower = 1L, tags = "train"),
         distance = p_dbl(0, default = 2, tags = "train"),
         kernel   = p_fct(c("rectangular", "triangular", "epanechnikov", "biweight", "triweight", "cos", "inv", "gaussian", "rank", "optimal"), default = "optimal", tags = "train"),
         scale    = p_lgl(default = TRUE, tags = "train"),
@@ -39,7 +39,7 @@ LearnerClassifKKNN = R6Class("LearnerClassifKKNN",
         predict_types = c("response", "prob"),
         feature_types = c("logical", "integer", "numeric", "factor", "ordered"),
         properties = c("twoclass", "multiclass"),
-        packages = "kknn",
+        packages = c("mlr3learners", "kknn"),
         man = "mlr3learners::mlr_learners_classif.kknn"
       )
     }
@@ -64,7 +64,7 @@ LearnerClassifKKNN = R6Class("LearnerClassifKKNN",
 
     .predict = function(task) {
       model = self$state$model
-      newdata = task$data(cols = task$feature_names)
+      newdata = ordered_features(task, self)
 
       with_package("kknn", { # https://github.com/KlausVigo/kknn/issues/16
         p = invoke(kknn::kknn,

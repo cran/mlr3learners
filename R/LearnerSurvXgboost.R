@@ -22,12 +22,12 @@
 #'   - Adjusted default: 0.
 #'   - Reason for change: Reduce verbosity.
 #' - `objective`:
-#'   - Actual default: `reg:squarederror`
-#'   - Adjusted default: `survival:cox`
+#'   - Actual default: `reg:squarederror`.
+#'   - Adjusted default: `survival:cox`.
 #'   - Reason for change: Changed to a survival objective.
 #'
-#' @template section_dictionary_learner
 #' @templateVar id surv.xgboost
+#' @template learner
 #'
 #' @references
 #' `r format_bib("chen_2016")`
@@ -52,12 +52,15 @@ LearnerSurvXgboost = R6Class("LearnerSurvXgboost",
         colsample_bylevel           = p_dbl(0, 1, default = 1, tags = "train"),
         colsample_bynode            = p_dbl(0, 1, default = 1, tags = "train"),
         colsample_bytree            = p_dbl(0, 1, default = 1, tags = "train"),
+        disable_default_eval_metric = p_lgl(default = FALSE, tags = "train"),
         early_stopping_rounds       = p_int(1L, default = NULL, special_vals = list(NULL), tags = "train"),
         eta                         = p_dbl(0, 1, default = 0.3, tags = "train"),
         feature_selector            = p_fct(c("cyclic", "shuffle", "random", "greedy", "thrifty"), default = "cyclic", tags = "train"),
         feval                       = p_uty(default = NULL, tags = "train"),
         gamma                       = p_dbl(0, default = 0, tags = "train"),
         grow_policy                 = p_fct(c("depthwise", "lossguide"), default = "depthwise", tags = "train"),
+        interaction_constraints     = p_uty(tags = "train"),
+        iterationrange              = p_uty(tags = "predict"),
         lambda                      = p_dbl(0, default = 1, tags = "train"),
         lambda_bias                 = p_dbl(0, default = 0, tags = "train"),
         max_bin                     = p_int(2L, default = 256L, tags = "train"),
@@ -77,14 +80,19 @@ LearnerSurvXgboost = R6Class("LearnerSurvXgboost",
         one_drop                    = p_lgl(default = FALSE, tags = "train"),
         predictor                   = p_fct(c("cpu_predictor", "gpu_predictor"), default = "cpu_predictor", tags = "train"),
         print_every_n               = p_int(1L, default = 1L, tags = "train"),
+        process_type                = p_fct(c("default", "update"), default = "default", tags = "train"),
         rate_drop                   = p_dbl(0, 1, default = 0, tags = "train"),
         refresh_leaf                = p_lgl(default = TRUE, tags = "train"),
+        sampling_method             = p_fct(c("uniform", "gradient_based"), default = "uniform", tags = "train"),
         sample_type                 = p_fct(c("uniform", "weighted"), default = "uniform", tags = "train"),
         save_name                   = p_uty(tags = "train"),
         save_period                 = p_int(0L, tags = "train"),
         scale_pos_weight            = p_dbl(default = 1, tags = "train"),
+        seed_per_iteration          = p_lgl(default = FALSE, tags = "train"),
         sketch_eps                  = p_dbl(0, 1, default = 0.03, tags = "train"),
         skip_drop                   = p_dbl(0, 1, default = 0, tags = "train"),
+        single_precision_histogram  = p_lgl(default = FALSE, tags = "train"),
+        strict_shape                = p_lgl(default = FALSE, tags = "predict"),
         subsample                   = p_dbl(0, 1, default = 1, tags = "train"),
         top_k                       = p_int(0, default = 0, tags = "train"),
         tree_method                 = p_fct(c("auto", "exact", "approx", "hist", "gpu_hist"), default = "auto", tags = "train"),
@@ -120,7 +128,7 @@ LearnerSurvXgboost = R6Class("LearnerSurvXgboost",
         predict_types = c("crank", "lp"),
         feature_types = c("integer", "numeric"),
         properties = c("weights", "missings", "importance"),
-        packages = "xgboost",
+        packages = c("mlr3learners", "xgboost"),
         man = "mlr3learners::mlr_learners_surv.xgboost"
       )
     },
@@ -161,14 +169,14 @@ LearnerSurvXgboost = R6Class("LearnerSurvXgboost",
         pv$eval_metric = "cox-nloglik"
         label[status != 1] = -1L * label[status != 1]
         data = xgboost::xgb.DMatrix(
-          data = as.matrix(data),
+          data = as_numeric_matrix(data),
           label = label)
       } else {
         pv$eval_metric = "aft-nloglik"
         y_lower_bound = y_upper_bound = label
         y_upper_bound[status == 0] = Inf
 
-        data = xgboost::xgb.DMatrix(as.matrix(data))
+        data = xgboost::xgb.DMatrix(as_numeric_matrix(data))
         xgboost::setinfo(data, "label_lower_bound", y_lower_bound)
         xgboost::setinfo(data, "label_upper_bound", y_upper_bound)
       }
@@ -187,8 +195,7 @@ LearnerSurvXgboost = R6Class("LearnerSurvXgboost",
     .predict = function(task) {
       pv = self$param_set$get_values(tags = "predict")
       model = self$model
-      newdata = data.matrix(task$data(cols = task$feature_names))
-      newdata = newdata[, model$feature_names, drop = FALSE]
+      newdata = as_numeric_matrix(ordered_features(task, self))
       lp = log(invoke(
         predict, model,
         newdata = newdata,

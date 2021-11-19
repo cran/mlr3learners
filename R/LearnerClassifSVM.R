@@ -6,8 +6,8 @@
 #' Support vector machine for classification.
 #' Calls [e1071::svm()] from package \CRANpkg{e1071}.
 #'
-#' @template section_dictionary_learner
 #' @templateVar id classif.svm
+#' @template learner
 #'
 #' @references
 #' `r format_bib("cortes_1995")`
@@ -25,20 +25,21 @@ LearnerClassifSVM = R6Class("LearnerClassifSVM",
     initialize = function() {
       ps = ps(
         cachesize       = p_dbl(default = 40L, tags = "train"),
+        class.weights   = p_uty(default = NULL, tags = "train"),
         coef0           = p_dbl(default = 0, tags = "train"),
         cost            = p_dbl(0, default = 1, tags = "train"),
-        cross           = p_int(0L, default = 0L, tags = "train"), # tunable = FALSE),
+        cross           = p_int(0L, default = 0L, tags = "train"),
+        decision.values = p_lgl(default = FALSE, tags = "predict"),
         degree          = p_int(1L, default = 3L, tags = "train"),
+        epsilon         = p_dbl(0, tags = "train"),
+        fitted          = p_lgl(default = TRUE, tags = "train"),
         gamma           = p_dbl(0, tags = "train"),
         kernel          = p_fct(c("linear", "polynomial", "radial", "sigmoid"), default = "radial", tags = "train"),
         nu              = p_dbl(default = 0.5, tags = "train"),
+        scale           = p_uty(default = TRUE, tags = "train"),
         shrinking       = p_lgl(default = TRUE, tags = "train"),
         tolerance       = p_dbl(0, default = 0.001, tags = "train"),
-        type            = p_fct(c("C-classification", "nu-classification"), default = "C-classification", tags = "train"),
-        fitted          = p_lgl(default = TRUE, tags = "train"), # tunable = FALSE),
-        scale           = p_uty(default = TRUE, tags = "train"), # , tunable = TRUE)
-        class.weights   = p_uty(default = NULL, tags = "train"),
-        decision.values = p_lgl(default = FALSE, tags = "predict")
+        type            = p_fct(c("C-classification", "nu-classification"), default = "C-classification", tags = "train")
       )
       ps$add_dep("cost", "type", CondEqual$new("C-classification"))
       ps$add_dep("nu", "type", CondEqual$new("nu-classification"))
@@ -52,7 +53,7 @@ LearnerClassifSVM = R6Class("LearnerClassifSVM",
         predict_types = c("response", "prob"),
         feature_types = c("logical", "integer", "numeric"),
         properties = c("twoclass", "multiclass"),
-        packages = "e1071",
+        packages = c("mlr3learners", "e1071"),
         man = "mlr3learners::mlr_learners_classif.svm"
       )
     }
@@ -74,7 +75,7 @@ LearnerClassifSVM = R6Class("LearnerClassifSVM",
 
     .predict = function(task) {
       pv = self$param_set$get_values(tags = "predict")
-      newdata = as_numeric_matrix(task$data(cols = task$feature_names))
+      newdata = as_numeric_matrix(ordered_features(task, self))
       newdata = newdata[, self$state$feature_names, drop = FALSE]
       p = invoke(predict, self$model,
         newdata = newdata,

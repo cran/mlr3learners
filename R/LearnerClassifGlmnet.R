@@ -28,7 +28,7 @@
 #' @inheritSection mlr_learners_classif.log_reg Internal Encoding
 #'
 #' @templateVar id classif.glmnet
-#' @template section_dictionary_learner
+#' @template learner
 #'
 #' @references
 #' `r format_bib("friedman_2010")`
@@ -45,44 +45,42 @@ LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet",
     #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       ps = ps(
-        alignment        = p_fct(c("lambda", "fraction"), default = "lambda", tags = "train"),
-        alpha            = p_dbl(0, 1, default = 1, tags = "train"),
-        big              = p_dbl(default = 9.9e35, tags = "train"),
-        devmax           = p_dbl(0, 1, default = 0.999, tags = "train"),
-        dfmax            = p_int(0L, tags = "train"),
-        eps              = p_dbl(0, 1, default = 1.0e-6, tags = "train"),
-        epsnr            = p_dbl(0, 1, default = 1.0e-8, tags = "train"),
-        exact            = p_lgl(default = FALSE, tags = "predict"),
-        exclude          = p_int(1L, tags = "train"),
-        exmx             = p_dbl(default = 250.0, tags = "train"),
-        fdev             = p_dbl(0, 1, default = 1.0e-5, tags = "train"),
-        gamma            = p_dbl(default = 1, tags = "predict"),
-        grouped          = p_lgl(default = TRUE, tags = "train"),
-        intercept        = p_lgl(default = TRUE, tags = "train"),
-        keep             = p_lgl(default = FALSE, tags = "train"),
-        lambda           = p_uty(tags = "train"),
-        lambda.min.ratio = p_dbl(0, 1, tags = "train"),
-        lower.limits     = p_uty(tags = "train"),
-        maxit            = p_int(1L, default = 100000L, tags = "train"),
-        mnlam            = p_int(1L, default = 5, tags = "train"),
-        mxit             = p_int(1L, default = 100L, tags = "train"),
-        mxitnr           = p_int(1L, default = 25L, tags = "train"),
-        newoffset        = p_uty(tags = "predict"),
-        offset           = p_uty(default = NULL, tags = "train"),
-        parallel         = p_lgl(default = FALSE, tags = "train"),
-        penalty.factor   = p_uty(tags = "train"),
-        pmax             = p_int(0L, tags = "train"),
-        pmin             = p_dbl(0, 1, default = 1.0e-9, tags = "train"),
-        prec             = p_dbl(default = 1e-10, tags = "train"),
-        predict.gamma    = p_dbl(default = 1, tags = "predict"),
-        relax            = p_lgl(default = FALSE, tags = "train"),
-        s                = p_dbl(0, default = 0.01, tags = "predict"),
-        standardize      = p_lgl(default = TRUE, tags = "train"),
-        thresh           = p_dbl(0, default = 1e-07, tags = "train"),
-        trace.it         = p_int(0, 1, default = 0, tags = "train"),
-        type.logistic    = p_fct(c("Newton", "modified.Newton"), tags = "train"),
-        type.multinomial = p_fct(c("ungrouped", "grouped"), tags = "train"),
-        upper.limits     = p_uty(tags = "train")
+        alpha                = p_dbl(0, 1, default = 1, tags = "train"),
+        big                  = p_dbl(default = 9.9e35, tags = "train"),
+        devmax               = p_dbl(0, 1, default = 0.999, tags = "train"),
+        dfmax                = p_int(0L, tags = "train"),
+        eps                  = p_dbl(0, 1, default = 1.0e-6, tags = "train"),
+        epsnr                = p_dbl(0, 1, default = 1.0e-8, tags = "train"),
+        exact                = p_lgl(default = FALSE, tags = "predict"),
+        exclude              = p_int(1L, tags = "train"),
+        exmx                 = p_dbl(default = 250.0, tags = "train"),
+        fdev                 = p_dbl(0, 1, default = 1.0e-5, tags = "train"),
+        gamma                = p_dbl(default = 1, tags = "predict"),
+        intercept            = p_lgl(default = TRUE, tags = "train"),
+        lambda               = p_uty(tags = "train"),
+        lambda.min.ratio     = p_dbl(0, 1, tags = "train"),
+        lower.limits         = p_uty(tags = "train"),
+        maxit                = p_int(1L, default = 100000L, tags = "train"),
+        mnlam                = p_int(1L, default = 5, tags = "train"),
+        mxit                 = p_int(1L, default = 100L, tags = "train"),
+        mxitnr               = p_int(1L, default = 25L, tags = "train"),
+        nlambda              = p_int(1L, default = 100L, tags = "train"),
+        newoffset            = p_uty(tags = "predict"),
+        offset               = p_uty(default = NULL, tags = "train"),
+        penalty.factor       = p_uty(tags = "train"),
+        pmax                 = p_int(0L, tags = "train"),
+        pmin                 = p_dbl(0, 1, default = 1.0e-9, tags = "train"),
+        prec                 = p_dbl(default = 1e-10, tags = "train"),
+        relax                = p_lgl(default = FALSE, tags = "train"),
+        s                    = p_dbl(0, default = 0.01, tags = "predict"),
+        standardize          = p_lgl(default = TRUE, tags = "train"),
+        standardize.response = p_lgl(default = FALSE, tags = "train"),
+        thresh               = p_dbl(0, default = 1e-07, tags = "train"),
+        trace.it             = p_int(0, 1, default = 0, tags = "train"),
+        type.gaussian        = p_fct(c("covariance", "naive"), tags = "train"),
+        type.logistic        = p_fct(c("Newton", "modified.Newton"), tags = "train"),
+        type.multinomial     = p_fct(c("ungrouped", "grouped"), tags = "train"),
+        upper.limits         = p_uty(tags = "train")
       )
       ps$add_dep("gamma", "relax", CondEqual$new(TRUE))
 
@@ -92,7 +90,7 @@ LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet",
         predict_types = c("response", "prob"),
         feature_types = c("logical", "integer", "numeric"),
         properties = c("weights", "twoclass", "multiclass"),
-        packages = "glmnet",
+        packages = c("mlr3learners", "glmnet"),
         man = "mlr3learners::mlr_learners_classif.glmnet"
       )
     },
@@ -124,7 +122,7 @@ LearnerClassifGlmnet = R6Class("LearnerClassifGlmnet",
     },
 
     .predict = function(task) {
-      newdata = as.matrix(ordered_features(task, glmnet_feature_names(self$model)))
+      newdata = as.matrix(ordered_features(task, self))
       pv = self$param_set$get_values(tags = "predict")
       pv = rename(pv, "predict.gamma", "gamma")
       pv$s = glmnet_get_lambda(self, pv)

@@ -6,8 +6,8 @@
 #' Naive Bayes classification.
 #' Calls [e1071::naiveBayes()] from package \CRANpkg{e1071}.
 #'
-#' @template section_dictionary_learner
 #' @templateVar id classif.naive_bayes
+#' @template learner
 #'
 #' @export
 #' @template seealso_learner
@@ -32,7 +32,7 @@ LearnerClassifNaiveBayes = R6Class("LearnerClassifNaiveBayes",
         predict_types = c("response", "prob"),
         properties = c("twoclass", "multiclass"),
         feature_types = c("logical", "integer", "numeric", "factor"),
-        packages = "e1071",
+        packages = c("mlr3learners", "e1071"),
         man = "mlr3learners::mlr_learners_classif.naive_bayes"
       )
     }
@@ -49,7 +49,7 @@ LearnerClassifNaiveBayes = R6Class("LearnerClassifNaiveBayes",
 
     .predict = function(task) {
       pv = self$param_set$get_values(tags = "predict")
-      newdata = task$data(cols = task$feature_names)
+      newdata = ordered_features(task, self)
 
       if (self$predict_type == "response") {
         response = invoke(predict, self$model,

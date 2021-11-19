@@ -8,8 +8,8 @@
 #'
 #' @inheritSection mlr_learners_classif.ranger Custom mlr3 defaults
 #'
-#' @template section_dictionary_learner
 #' @templateVar id surv.ranger
+#' @template learner
 #'
 #' @references
 #' `r format_bib("wright_2017", "breiman_2001")`
@@ -60,7 +60,7 @@ LearnerSurvRanger = R6Class("LearnerSurvRanger",
         predict_types = c("distr", "crank"),
         feature_types = c("logical", "integer", "numeric", "character", "factor", "ordered"),
         properties = c("weights", "importance", "oob_error"),
-        packages = "ranger",
+        packages = c("mlr3learners", "ranger"),
         man = "mlr3learners::mlr_learners_surv.ranger"
       )
     },
@@ -90,7 +90,7 @@ LearnerSurvRanger = R6Class("LearnerSurvRanger",
   private = list(
     .train = function(task) {
       pv = self$param_set$get_values(tags = "train")
-      pv = ranger_get_mtry(pv, task)
+      pv = convert_ratio(pv, "mtry", "mtry.ratio", length(task$feature_names))
       targets = task$target_names
 
       invoke(ranger::ranger,
@@ -105,7 +105,7 @@ LearnerSurvRanger = R6Class("LearnerSurvRanger",
 
     .predict = function(task) {
       pv = self$param_set$get_values(tags = "predict")
-      newdata = task$data(cols = task$feature_names)
+      newdata = ordered_features(task, self)
       prediction = predict(object = self$model, data = newdata)
       mlr3proba::.surv_return(times = prediction$unique.death.times, surv = prediction$survival)
     }

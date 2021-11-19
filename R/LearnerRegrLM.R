@@ -7,7 +7,7 @@
 #' Calls [stats::lm()].
 #'
 #' @templateVar id regr.lm
-#' @template section_dictionary_learner
+#' @template learner
 #'
 #' @template section_contrasts
 #'
@@ -42,7 +42,7 @@ LearnerRegrLM = R6Class("LearnerRegrLM",
         predict_types = c("response", "se"),
         feature_types = c("logical", "integer", "numeric", "factor", "character"),
         properties = c("weights", "loglik"),
-        packages = "stats",
+        packages = c("mlr3learners", "stats"),
         man = "mlr3learners::mlr_learners_regr.lm"
       )
     },
@@ -68,7 +68,7 @@ LearnerRegrLM = R6Class("LearnerRegrLM",
 
     .predict = function(task) {
       pv = self$param_set$get_values(tags = "predict")
-      newdata = task$data(cols = task$feature_names)
+      newdata = ordered_features(task, self)
       se_fit = self$predict_type == "se"
       prediction = invoke(predict, object = self$model, newdata = newdata, se.fit = se_fit, .args = pv)
 

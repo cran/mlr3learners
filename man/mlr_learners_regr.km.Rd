@@ -24,8 +24,52 @@ lrn("regr.km")
 }
 }
 
+\section{Meta Information}{
+
+\itemize{
+\item Task type: \dQuote{regr}
+\item Predict Types: \dQuote{response}, \dQuote{se}
+\item Feature Types: \dQuote{logical}, \dQuote{integer}, \dQuote{numeric}
+\item Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, \CRANpkg{DiceKriging}
+}
+}
+
+\section{Parameters}{
+\tabular{lllll}{
+   Id \tab Type \tab Default \tab Levels \tab Range \cr
+   bias.correct \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   checkNames \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   coef.cov \tab list \tab NULL \tab  \tab - \cr
+   coef.trend \tab list \tab NULL \tab  \tab - \cr
+   coef.var \tab list \tab NULL \tab  \tab - \cr
+   control \tab list \tab NULL \tab  \tab - \cr
+   cov.compute \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   covtype \tab character \tab matern5_2 \tab gauss, matern5_2, matern3_2, exp, powexp \tab - \cr
+   estim.method \tab character \tab MLE \tab MLE, LOO \tab - \cr
+   gr \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   iso \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   jitter \tab numeric \tab 0 \tab  \tab \eqn{[0, \infty)}{[0, Inf)} \cr
+   kernel \tab list \tab NULL \tab  \tab - \cr
+   knots \tab list \tab NULL \tab  \tab - \cr
+   light.return \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   lower \tab list \tab NULL \tab  \tab - \cr
+   multistart \tab integer \tab 1 \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   noise.var \tab list \tab NULL \tab  \tab - \cr
+   nugget \tab numeric \tab - \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   nugget.estim \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   nugget.stability \tab numeric \tab 0 \tab  \tab \eqn{[0, \infty)}{[0, Inf)} \cr
+   optim.method \tab character \tab BFGS \tab BFGS, gen \tab - \cr
+   parinit \tab list \tab NULL \tab  \tab - \cr
+   penalty \tab list \tab NULL \tab  \tab - \cr
+   scaling \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   se.compute \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   type \tab character \tab SK \tab SK, UK \tab - \cr
+   upper \tab list \tab NULL \tab  \tab - \cr
+}
+}
+
 \examples{
-if (requireNamespace("DiceKriging")) {
+if (requireNamespace("DiceKriging", quietly = TRUE)) {
   learner = mlr3::lrn("regr.km")
   print(learner)
 
@@ -40,8 +84,48 @@ Roustant O, Ginsbourger D, Deville Y (2012).
 \doi{10.18637/jss.v051.i01}.
 }
 \seealso{
-\link[mlr3misc:Dictionary]{Dictionary} of \link[mlr3:Learner]{Learners}: \link[mlr3:mlr_learners]{mlr3::mlr_learners}
+\itemize{
+\item Chapter in the \href{https://mlr3book.mlr-org.com/}{mlr3book}:
+\url{https://mlr3book.mlr-org.com/basics.html#learners}
+\item Package \href{https://github.com/mlr-org/mlr3extralearners}{mlr3extralearners} for more learners.
+\item \link[mlr3misc:Dictionary]{Dictionary} of \link[=Learner]{Learners}: \link{mlr_learners}
+\item \code{as.data.table(mlr_learners)} for a table of available \link[=Learner]{Learners} in the running session (depending on the loaded packages).
+\item \CRANpkg{mlr3pipelines} to combine learners with pre- and postprocessing steps.
+\item Extension packages for additional task types:
+\itemize{
+\item \CRANpkg{mlr3proba} for probabilistic supervised regression and survival analysis.
+\item \CRANpkg{mlr3cluster} for unsupervised clustering.
 }
+\item \CRANpkg{mlr3tuning} for tuning of hyperparameters, \CRANpkg{mlr3tuningspaces}
+for established default tuning spaces.
+}
+
+Other Learner: 
+\code{\link{mlr_learners_classif.cv_glmnet}},
+\code{\link{mlr_learners_classif.glmnet}},
+\code{\link{mlr_learners_classif.kknn}},
+\code{\link{mlr_learners_classif.lda}},
+\code{\link{mlr_learners_classif.log_reg}},
+\code{\link{mlr_learners_classif.multinom}},
+\code{\link{mlr_learners_classif.naive_bayes}},
+\code{\link{mlr_learners_classif.nnet}},
+\code{\link{mlr_learners_classif.qda}},
+\code{\link{mlr_learners_classif.ranger}},
+\code{\link{mlr_learners_classif.svm}},
+\code{\link{mlr_learners_classif.xgboost}},
+\code{\link{mlr_learners_regr.cv_glmnet}},
+\code{\link{mlr_learners_regr.glmnet}},
+\code{\link{mlr_learners_regr.kknn}},
+\code{\link{mlr_learners_regr.lm}},
+\code{\link{mlr_learners_regr.ranger}},
+\code{\link{mlr_learners_regr.svm}},
+\code{\link{mlr_learners_regr.xgboost}},
+\code{\link{mlr_learners_surv.cv_glmnet}},
+\code{\link{mlr_learners_surv.glmnet}},
+\code{\link{mlr_learners_surv.ranger}},
+\code{\link{mlr_learners_surv.xgboost}}
+}
+\concept{Learner}
 \section{Super classes}{
 \code{\link[mlr3:Learner]{mlr3::Learner}} -> \code{\link[mlr3:LearnerRegr]{mlr3::LearnerRegr}} -> \code{LearnerRegrKM}
 }

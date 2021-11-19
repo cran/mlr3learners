@@ -18,7 +18,7 @@
 #'   - Reason for change: Save some memory.
 #'
 #' @templateVar id classif.log_reg
-#' @template section_dictionary_learner
+#' @template learner
 #'
 #' @template section_contrasts
 #'
@@ -54,7 +54,7 @@ LearnerClassifLogReg = R6Class("LearnerClassifLogReg",
         predict_types = c("response", "prob"),
         feature_types = c("logical", "integer", "numeric", "character", "factor", "ordered"),
         properties = c("weights", "twoclass", "loglik"),
-        packages = "stats",
+        packages = c("mlr3learners", "stats"),
         man = "mlr3learners::mlr_learners_classif.log_reg"
       )
     },
@@ -87,7 +87,7 @@ LearnerClassifLogReg = R6Class("LearnerClassifLogReg",
     .predict = function(task) {
       pv = self$param_set$get_values(tags = "predict")
       lvls = c(task$negative, task$positive)
-      newdata = task$data(cols = task$feature_names)
+      newdata = ordered_features(task, self)
 
       p = unname(invoke(predict, object = self$model, newdata = newdata, type = "response", .args = pv))
 

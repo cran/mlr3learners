@@ -13,7 +13,7 @@
 #' respectively.
 #'
 #' @templateVar id classif.lda
-#' @template section_dictionary_learner
+#' @template learner
 #'
 #' @references
 #' `r format_bib("venables_2002")`
@@ -46,7 +46,7 @@ LearnerClassifLDA = R6Class("LearnerClassifLDA",
         predict_types = c("response", "prob"),
         feature_types = c("logical", "integer", "numeric", "factor", "ordered"),
         properties = c("weights", "twoclass", "multiclass"),
-        packages = "MASS",
+        packages = c("mlr3learners", "MASS"),
         man = "mlr3learners::mlr_learners_classif.lda"
       )
     }
@@ -62,7 +62,7 @@ LearnerClassifLDA = R6Class("LearnerClassifLDA",
     .predict = function(task) {
       pv = self$param_set$get_values(tags = "predict")
       pv = rename(pv, c("predict.method", "predict.prior"), c("method", "prior"))
-      newdata = task$data(cols = task$feature_names)
+      newdata = ordered_features(task, self)
 
       p = invoke(predict, self$model, newdata = newdata, .args = pv)
 

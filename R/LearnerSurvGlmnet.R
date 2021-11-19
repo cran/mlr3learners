@@ -11,7 +11,7 @@
 #' @inherit mlr_learners_classif.glmnet details
 #'
 #' @templateVar id surv.glmnet
-#' @template section_dictionary_learner
+#' @template learner
 #'
 #' @references
 #' `r format_bib("friedman_2010")`
@@ -28,6 +28,7 @@ LearnerSurvGlmnet = R6Class("LearnerSurvGlmnet",
     #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       ps = ps(
+        alignment        = p_fct(c("lambda", "fraction"), default = "lambda", tags = "train"),
         alpha            = p_dbl(0, 1, default = 1, tags = "train"),
         big              = p_dbl(default = 9.9e35, tags = "train"),
         devmax           = p_dbl(0, 1, default = 0.999, tags = "train"),
@@ -38,7 +39,10 @@ LearnerSurvGlmnet = R6Class("LearnerSurvGlmnet",
         exclude          = p_uty(tags = "train"),
         exmx             = p_dbl(default = 250.0, tags = "train"),
         fdev             = p_dbl(0, 1, default = 1.0e-5, tags = "train"),
+        gamma            = p_uty(tags = "train"),
+        grouped          = p_lgl(default = TRUE, tags = "train"),
         intercept        = p_lgl(default = TRUE, tags = "train"),
+        keep             = p_lgl(default = FALSE, tags = "train"),
         lambda           = p_uty(tags = "train"),
         lambda.min.ratio = p_dbl(0, 1, tags = "train"),
         lower.limits     = p_uty(default = -Inf, tags = "train"),
@@ -49,11 +53,12 @@ LearnerSurvGlmnet = R6Class("LearnerSurvGlmnet",
         newoffset        = p_uty(tags = "predict"),
         nlambda          = p_int(1L, default = 100L, tags = "train"),
         offset           = p_uty(default = NULL, tags = "train"),
+        parallel         = p_lgl(default = FALSE, tags = "train"),
         penalty.factor   = p_uty(tags = "train"),
         pmax             = p_int(0L, tags = "train"),
         pmin             = p_dbl(0, 1, default = 1.0e-9, tags = "train"),
         prec             = p_dbl(default = 1e-10, tags = "train"),
-        predict.gamma    = p_dbl(default = 1, tags = "predict"),
+        predict.gamma    = p_dbl(default = "gamma.1se", special_vals = list("gamma.1se", "gamma.min"), tags = "predict"),
         relax            = p_lgl(default = FALSE, tags = "train"),
         s                = p_dbl(0, default = 0.01, tags = "predict"),
         standardize      = p_lgl(default = TRUE, tags = "train"),
@@ -70,7 +75,7 @@ LearnerSurvGlmnet = R6Class("LearnerSurvGlmnet",
         feature_types = c("logical", "integer", "numeric"),
         predict_types = c("crank", "lp"),
         properties = c("weights", "selected_features"),
-        packages = "glmnet",
+        packages = c("mlr3learners", "glmnet"),
         man = "mlr3learners::mlr_learners_surv.glmnet"
       )
     },
@@ -102,7 +107,7 @@ LearnerSurvGlmnet = R6Class("LearnerSurvGlmnet",
     },
 
     .predict = function(task) {
-      newdata = as.matrix(ordered_features(task, glmnet_feature_names(self$model)))
+      newdata = as.matrix(ordered_features(task, self))
       pv = self$param_set$get_values(tags = "predict")
       pv = rename(pv, "predict.gamma", "gamma")
       pv$s = glmnet_get_lambda(self, pv)
