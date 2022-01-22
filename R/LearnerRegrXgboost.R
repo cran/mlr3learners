@@ -6,6 +6,10 @@
 #' eXtreme Gradient Boosting regression.
 #' Calls [xgboost::xgb.train()] from package \CRANpkg{xgboost}.
 #'
+#' To compute on GPUs, you first need to compile \CRANpkg{xgboost} yourself and link
+#' against CUDA. See \url{https://xgboost.readthedocs.io/en/stable/build.html#building-with-gpu-support}.
+#'
+#' @template note_xgboost
 #' @inheritSection mlr_learners_classif.xgboost Custom mlr3 defaults
 #'
 #' @templateVar id regr.xgboost
@@ -95,7 +99,7 @@ LearnerRegrXgboost = R6Class("LearnerRegrXgboost",
       ps$add_dep("print_every_n", "verbose", CondEqual$new(1L))
       ps$add_dep("sampling_method", "booster", CondEqual$new("gbtree"))
       ps$add_dep("sample_type", "booster", CondEqual$new("dart"))
-      ps$add_dep("normalize_type", "booster", CondEqual$new("gbtree"))
+      ps$add_dep("normalize_type", "booster", CondEqual$new("dart"))
       ps$add_dep("rate_drop", "booster", CondEqual$new("dart"))
       ps$add_dep("skip_drop", "booster", CondEqual$new("dart"))
       ps$add_dep("one_drop", "booster", CondEqual$new("dart"))

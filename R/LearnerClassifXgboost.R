@@ -10,6 +10,7 @@
 #' for binary classification problems and set to `"mlogloss"` for multiclass problems.
 #' This was necessary to silence a deprecation warning.
 #'
+#' @template note_xgboost
 #' @section Custom mlr3 defaults:
 #' - `nrounds`:
 #'   - Actual default: no default.
@@ -113,7 +114,7 @@ LearnerClassifXgboost = R6Class("LearnerClassifXgboost",
       ps$add_dep("tweedie_variance_power", "objective", CondEqual$new("reg:tweedie"))
       ps$add_dep("print_every_n", "verbose", CondEqual$new(1L))
       ps$add_dep("sampling_method", "booster", CondEqual$new("gbtree"))
-      ps$add_dep("normalize_type", "booster", CondEqual$new("gbtree"))
+      ps$add_dep("normalize_type", "booster", CondEqual$new("dart"))
       ps$add_dep("rate_drop", "booster", CondEqual$new("dart"))
       ps$add_dep("skip_drop", "booster", CondEqual$new("dart"))
       ps$add_dep("one_drop", "booster", CondEqual$new("dart"))
