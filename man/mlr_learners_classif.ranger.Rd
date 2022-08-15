@@ -8,6 +8,18 @@
 Random classification forest.
 Calls \code{\link[ranger:ranger]{ranger::ranger()}} from package \CRANpkg{ranger}.
 }
+\section{Custom mlr3 parameters}{
+
+\itemize{
+\item \code{mtry}:
+\itemize{
+\item This hyperparameter can alternatively be set via our hyperparameter \code{mtry.ratio}
+as \code{mtry = max(ceiling(mtry.ratio * n_features), 1)}.
+Note that \code{mtry} and \code{mtry.ratio} are mutually exclusive.
+}
+}
+}
+
 \section{Custom mlr3 defaults}{
 
 \itemize{
@@ -16,12 +28,6 @@ Calls \code{\link[ranger:ranger]{ranger::ranger()}} from package \CRANpkg{ranger
 \item Actual default: \code{NULL}, triggering auto-detection of the number of CPUs.
 \item Adjusted value: 1.
 \item Reason for change: Conflicting with parallelization via \CRANpkg{future}.
-}
-\item \code{mtry}:
-\itemize{
-\item This hyperparameter can alternatively be set via our hyperparameter \code{mtry.ratio}
-as \code{mtry = max(ceiling(mtry.ratio * n_features), 1)}.
-Note that \code{mtry} and \code{mtry.ratio} are mutually exclusive.
 }
 }
 }
@@ -37,12 +43,47 @@ lrn("classif.ranger")
 
 \section{Meta Information}{
 
-, * Task type: \dQuote{classif}, * Predict Types: \dQuote{response}, \dQuote{prob}, * Feature Types: \dQuote{logical}, \dQuote{integer}, \dQuote{numeric}, \dQuote{character}, \dQuote{factor}, \dQuote{ordered}, * Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, \CRANpkg{ranger}
+\itemize{
+\item Task type: \dQuote{classif}
+\item Predict Types: \dQuote{response}, \dQuote{prob}
+\item Feature Types: \dQuote{logical}, \dQuote{integer}, \dQuote{numeric}, \dQuote{character}, \dQuote{factor}, \dQuote{ordered}
+\item Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, \CRANpkg{ranger}
+}
 }
 
 \section{Parameters}{
-
-, |Id                           |Type      |Default |Levels                                          |Range                                |, |:----------------------------|:---------|:-------|:-----------------------------------------------|:------------------------------------|, |alpha                        |numeric   |0.5     |                                                |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |, |always.split.variables       |untyped   |-       |                                                |-                                    |, |class.weights                |untyped   |        |                                                |-                                    |, |holdout                      |logical   |FALSE   |TRUE, FALSE                                     |-                                    |, |importance                   |character |-       |none, impurity, impurity_corrected, permutation |-                                    |, |keep.inbag                   |logical   |FALSE   |TRUE, FALSE                                     |-                                    |, |max.depth                    |integer   |NULL    |                                                |\eqn{[0, \infty)}{[0, Inf)}          |, |min.node.size                |integer   |NULL    |                                                |\eqn{[1, \infty)}{[1, Inf)}          |, |min.prop                     |numeric   |0.1     |                                                |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |, |minprop                      |numeric   |0.1     |                                                |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |, |mtry                         |integer   |-       |                                                |\eqn{[1, \infty)}{[1, Inf)}          |, |mtry.ratio                   |numeric   |-       |                                                |\eqn{[0, 1]}{[0, 1]}                 |, |num.random.splits            |integer   |1       |                                                |\eqn{[1, \infty)}{[1, Inf)}          |, |num.threads                  |integer   |1       |                                                |\eqn{[1, \infty)}{[1, Inf)}          |, |num.trees                    |integer   |500     |                                                |\eqn{[1, \infty)}{[1, Inf)}          |, |oob.error                    |logical   |TRUE    |TRUE, FALSE                                     |-                                    |, |regularization.factor        |untyped   |1       |                                                |-                                    |, |regularization.usedepth      |logical   |FALSE   |TRUE, FALSE                                     |-                                    |, |replace                      |logical   |TRUE    |TRUE, FALSE                                     |-                                    |, |respect.unordered.factors    |character |ignore  |ignore, order, partition                        |-                                    |, |sample.fraction              |numeric   |-       |                                                |\eqn{[0, 1]}{[0, 1]}                 |, |save.memory                  |logical   |FALSE   |TRUE, FALSE                                     |-                                    |, |scale.permutation.importance |logical   |FALSE   |TRUE, FALSE                                     |-                                    |, |se.method                    |character |infjack |jack, infjack                                   |-                                    |, |seed                         |integer   |NULL    |                                                |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |, |split.select.weights         |untyped   |        |                                                |-                                    |, |splitrule                    |character |gini    |gini, extratrees, hellinger                     |-                                    |, |verbose                      |logical   |TRUE    |TRUE, FALSE                                     |-                                    |, |write.forest                 |logical   |TRUE    |TRUE, FALSE                                     |-                                    |
+\tabular{lllll}{
+   Id \tab Type \tab Default \tab Levels \tab Range \cr
+   alpha \tab numeric \tab 0.5 \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   always.split.variables \tab untyped \tab - \tab  \tab - \cr
+   class.weights \tab untyped \tab  \tab  \tab - \cr
+   holdout \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   importance \tab character \tab - \tab none, impurity, impurity_corrected, permutation \tab - \cr
+   keep.inbag \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   max.depth \tab integer \tab NULL \tab  \tab \eqn{[0, \infty)}{[0, Inf)} \cr
+   min.node.size \tab integer \tab NULL \tab  \tab \eqn{[1, \infty)}{[1, Inf)} \cr
+   min.prop \tab numeric \tab 0.1 \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   minprop \tab numeric \tab 0.1 \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   mtry \tab integer \tab - \tab  \tab \eqn{[1, \infty)}{[1, Inf)} \cr
+   mtry.ratio \tab numeric \tab - \tab  \tab \eqn{[0, 1]}{[0, 1]} \cr
+   num.random.splits \tab integer \tab 1 \tab  \tab \eqn{[1, \infty)}{[1, Inf)} \cr
+   num.threads \tab integer \tab 1 \tab  \tab \eqn{[1, \infty)}{[1, Inf)} \cr
+   num.trees \tab integer \tab 500 \tab  \tab \eqn{[1, \infty)}{[1, Inf)} \cr
+   oob.error \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   regularization.factor \tab untyped \tab 1 \tab  \tab - \cr
+   regularization.usedepth \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   replace \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   respect.unordered.factors \tab character \tab ignore \tab ignore, order, partition \tab - \cr
+   sample.fraction \tab numeric \tab - \tab  \tab \eqn{[0, 1]}{[0, 1]} \cr
+   save.memory \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   scale.permutation.importance \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   se.method \tab character \tab infjack \tab jack, infjack \tab - \cr
+   seed \tab integer \tab NULL \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   split.select.weights \tab untyped \tab  \tab  \tab - \cr
+   splitrule \tab character \tab gini \tab gini, extratrees, hellinger \tab - \cr
+   verbose \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   write.forest \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+}
 }
 
 \examples{
@@ -99,6 +140,7 @@ Other Learner:
 \code{\link{mlr_learners_regr.kknn}},
 \code{\link{mlr_learners_regr.km}},
 \code{\link{mlr_learners_regr.lm}},
+\code{\link{mlr_learners_regr.nnet}},
 \code{\link{mlr_learners_regr.ranger}},
 \code{\link{mlr_learners_regr.svm}},
 \code{\link{mlr_learners_regr.xgboost}}
@@ -119,14 +161,14 @@ Other Learner:
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="base_learner"><a href='../../mlr3/html/Learner.html#method-Learner-base_learner'><code>mlr3::Learner$base_learner()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="format"><a href='../../mlr3/html/Learner.html#method-Learner-format'><code>mlr3::Learner$format()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="help"><a href='../../mlr3/html/Learner.html#method-Learner-help'><code>mlr3::Learner$help()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict"><a href='../../mlr3/html/Learner.html#method-Learner-predict'><code>mlr3::Learner$predict()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict_newdata"><a href='../../mlr3/html/Learner.html#method-Learner-predict_newdata'><code>mlr3::Learner$predict_newdata()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="print"><a href='../../mlr3/html/Learner.html#method-Learner-print'><code>mlr3::Learner$print()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="reset"><a href='../../mlr3/html/Learner.html#method-Learner-reset'><code>mlr3::Learner$reset()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="train"><a href='../../mlr3/html/Learner.html#method-Learner-train'><code>mlr3::Learner$train()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="base_learner"><a href='../../mlr3/html/Learner.html#method-Learner-base_learner'><code>mlr3::Learner$base_learner()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="format"><a href='../../mlr3/html/Learner.html#method-Learner-format'><code>mlr3::Learner$format()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="help"><a href='../../mlr3/html/Learner.html#method-Learner-help'><code>mlr3::Learner$help()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict"><a href='../../mlr3/html/Learner.html#method-Learner-predict'><code>mlr3::Learner$predict()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict_newdata"><a href='../../mlr3/html/Learner.html#method-Learner-predict_newdata'><code>mlr3::Learner$predict_newdata()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="print"><a href='../../mlr3/html/Learner.html#method-Learner-print'><code>mlr3::Learner$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="reset"><a href='../../mlr3/html/Learner.html#method-Learner-reset'><code>mlr3::Learner$reset()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="train"><a href='../../mlr3/html/Learner.html#method-Learner-train'><code>mlr3::Learner$train()</code></a></span></li>
 </ul>
 </details>
 }}

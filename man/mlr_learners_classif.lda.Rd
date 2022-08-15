@@ -25,12 +25,25 @@ lrn("classif.lda")
 
 \section{Meta Information}{
 
-, * Task type: \dQuote{classif}, * Predict Types: \dQuote{response}, \dQuote{prob}, * Feature Types: \dQuote{logical}, \dQuote{integer}, \dQuote{numeric}, \dQuote{factor}, \dQuote{ordered}, * Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, \CRANpkg{MASS}
+\itemize{
+\item Task type: \dQuote{classif}
+\item Predict Types: \dQuote{response}, \dQuote{prob}
+\item Feature Types: \dQuote{logical}, \dQuote{integer}, \dQuote{numeric}, \dQuote{factor}, \dQuote{ordered}
+\item Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, \CRANpkg{MASS}
+}
 }
 
 \section{Parameters}{
-
-, |Id             |Type      |Default |Levels                        |Range                                |, |:--------------|:---------|:-------|:-----------------------------|:------------------------------------|, |dimen          |untyped   |-       |                              |-                                    |, |method         |character |moment  |moment, mle, mve, t           |-                                    |, |nu             |integer   |-       |                              |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |, |predict.method |character |plug-in |plug-in, predictive, debiased |-                                    |, |predict.prior  |untyped   |-       |                              |-                                    |, |prior          |untyped   |-       |                              |-                                    |, |tol            |numeric   |-       |                              |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |
+\tabular{lllll}{
+   Id \tab Type \tab Default \tab Levels \tab Range \cr
+   dimen \tab untyped \tab - \tab  \tab - \cr
+   method \tab character \tab moment \tab moment, mle, mve, t \tab - \cr
+   nu \tab integer \tab - \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   predict.method \tab character \tab plug-in \tab plug-in, predictive, debiased \tab - \cr
+   predict.prior \tab untyped \tab - \tab  \tab - \cr
+   prior \tab untyped \tab - \tab  \tab - \cr
+   tol \tab numeric \tab - \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+}
 }
 
 \examples{
@@ -82,6 +95,7 @@ Other Learner:
 \code{\link{mlr_learners_regr.kknn}},
 \code{\link{mlr_learners_regr.km}},
 \code{\link{mlr_learners_regr.lm}},
+\code{\link{mlr_learners_regr.nnet}},
 \code{\link{mlr_learners_regr.ranger}},
 \code{\link{mlr_learners_regr.svm}},
 \code{\link{mlr_learners_regr.xgboost}}
@@ -100,14 +114,14 @@ Other Learner:
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="base_learner"><a href='../../mlr3/html/Learner.html#method-Learner-base_learner'><code>mlr3::Learner$base_learner()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="format"><a href='../../mlr3/html/Learner.html#method-Learner-format'><code>mlr3::Learner$format()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="help"><a href='../../mlr3/html/Learner.html#method-Learner-help'><code>mlr3::Learner$help()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict"><a href='../../mlr3/html/Learner.html#method-Learner-predict'><code>mlr3::Learner$predict()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict_newdata"><a href='../../mlr3/html/Learner.html#method-Learner-predict_newdata'><code>mlr3::Learner$predict_newdata()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="print"><a href='../../mlr3/html/Learner.html#method-Learner-print'><code>mlr3::Learner$print()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="reset"><a href='../../mlr3/html/Learner.html#method-Learner-reset'><code>mlr3::Learner$reset()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="train"><a href='../../mlr3/html/Learner.html#method-Learner-train'><code>mlr3::Learner$train()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="base_learner"><a href='../../mlr3/html/Learner.html#method-Learner-base_learner'><code>mlr3::Learner$base_learner()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="format"><a href='../../mlr3/html/Learner.html#method-Learner-format'><code>mlr3::Learner$format()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="help"><a href='../../mlr3/html/Learner.html#method-Learner-help'><code>mlr3::Learner$help()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict"><a href='../../mlr3/html/Learner.html#method-Learner-predict'><code>mlr3::Learner$predict()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict_newdata"><a href='../../mlr3/html/Learner.html#method-Learner-predict_newdata'><code>mlr3::Learner$predict_newdata()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="print"><a href='../../mlr3/html/Learner.html#method-Learner-print'><code>mlr3::Learner$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="reset"><a href='../../mlr3/html/Learner.html#method-Learner-reset'><code>mlr3::Learner$reset()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="train"><a href='../../mlr3/html/Learner.html#method-Learner-train'><code>mlr3::Learner$train()</code></a></span></li>
 </ul>
 </details>
 }}

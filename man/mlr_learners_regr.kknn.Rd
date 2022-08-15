@@ -41,12 +41,24 @@ lrn("regr.kknn")
 
 \section{Meta Information}{
 
-, * Task type: \dQuote{regr}, * Predict Types: \dQuote{response}, * Feature Types: \dQuote{logical}, \dQuote{integer}, \dQuote{numeric}, \dQuote{factor}, \dQuote{ordered}, * Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, \CRANpkg{kknn}
+\itemize{
+\item Task type: \dQuote{regr}
+\item Predict Types: \dQuote{response}
+\item Feature Types: \dQuote{logical}, \dQuote{integer}, \dQuote{numeric}, \dQuote{factor}, \dQuote{ordered}
+\item Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, \CRANpkg{kknn}
+}
 }
 
 \section{Parameters}{
-
-, |Id          |Type      |Default |Levels                                                                                        |Range                       |, |:-----------|:---------|:-------|:---------------------------------------------------------------------------------------------|:---------------------------|, |k           |integer   |7       |                                                                                              |\eqn{[1, \infty)}{[1, Inf)} |, |distance    |numeric   |2       |                                                                                              |\eqn{[0, \infty)}{[0, Inf)} |, |kernel      |character |optimal |rectangular, triangular, epanechnikov, biweight, triweight, cos, inv, gaussian, rank, optimal |-                           |, |scale       |logical   |TRUE    |TRUE, FALSE                                                                                   |-                           |, |ykernel     |untyped   |        |                                                                                              |-                           |, |store_model |logical   |FALSE   |TRUE, FALSE                                                                                   |-                           |
+\tabular{lllll}{
+   Id \tab Type \tab Default \tab Levels \tab Range \cr
+   k \tab integer \tab 7 \tab  \tab \eqn{[1, \infty)}{[1, Inf)} \cr
+   distance \tab numeric \tab 2 \tab  \tab \eqn{[0, \infty)}{[0, Inf)} \cr
+   kernel \tab character \tab optimal \tab rectangular, triangular, epanechnikov, biweight, triweight, cos, inv, gaussian, rank, optimal \tab - \cr
+   scale \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   ykernel \tab untyped \tab  \tab  \tab - \cr
+   store_model \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+}
 }
 
 \examples{
@@ -108,6 +120,7 @@ Other Learner:
 \code{\link{mlr_learners_regr.glmnet}},
 \code{\link{mlr_learners_regr.km}},
 \code{\link{mlr_learners_regr.lm}},
+\code{\link{mlr_learners_regr.nnet}},
 \code{\link{mlr_learners_regr.ranger}},
 \code{\link{mlr_learners_regr.svm}},
 \code{\link{mlr_learners_regr.xgboost}}
@@ -126,14 +139,14 @@ Other Learner:
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="base_learner"><a href='../../mlr3/html/Learner.html#method-Learner-base_learner'><code>mlr3::Learner$base_learner()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="format"><a href='../../mlr3/html/Learner.html#method-Learner-format'><code>mlr3::Learner$format()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="help"><a href='../../mlr3/html/Learner.html#method-Learner-help'><code>mlr3::Learner$help()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict"><a href='../../mlr3/html/Learner.html#method-Learner-predict'><code>mlr3::Learner$predict()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict_newdata"><a href='../../mlr3/html/Learner.html#method-Learner-predict_newdata'><code>mlr3::Learner$predict_newdata()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="print"><a href='../../mlr3/html/Learner.html#method-Learner-print'><code>mlr3::Learner$print()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="reset"><a href='../../mlr3/html/Learner.html#method-Learner-reset'><code>mlr3::Learner$reset()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="train"><a href='../../mlr3/html/Learner.html#method-Learner-train'><code>mlr3::Learner$train()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="base_learner"><a href='../../mlr3/html/Learner.html#method-Learner-base_learner'><code>mlr3::Learner$base_learner()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="format"><a href='../../mlr3/html/Learner.html#method-Learner-format'><code>mlr3::Learner$format()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="help"><a href='../../mlr3/html/Learner.html#method-Learner-help'><code>mlr3::Learner$help()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict"><a href='../../mlr3/html/Learner.html#method-Learner-predict'><code>mlr3::Learner$predict()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict_newdata"><a href='../../mlr3/html/Learner.html#method-Learner-predict_newdata'><code>mlr3::Learner$predict_newdata()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="print"><a href='../../mlr3/html/Learner.html#method-Learner-print'><code>mlr3::Learner$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="reset"><a href='../../mlr3/html/Learner.html#method-Learner-reset'><code>mlr3::Learner$reset()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="train"><a href='../../mlr3/html/Learner.html#method-Learner-train'><code>mlr3::Learner$train()</code></a></span></li>
 </ul>
 </details>
 }}

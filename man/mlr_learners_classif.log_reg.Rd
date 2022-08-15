@@ -15,6 +15,12 @@ model fitting to comply to the \code{\link[stats:glm]{stats::glm()}} convention 
 as the first factor level.
 }
 
+\section{Weights}{
+
+It is not advisable to change the weights of a logistic regression.
+For more details, see this question on \href{https://stats.stackexchange.com/questions/386675/what-are-weights-in-a-binary-glm-and-how-to-calculate-them}{Cross Validated}.
+}
+
 \section{Custom mlr3 defaults}{
 
 \itemize{
@@ -38,12 +44,30 @@ lrn("classif.log_reg")
 
 \section{Meta Information}{
 
-, * Task type: \dQuote{classif}, * Predict Types: \dQuote{response}, \dQuote{prob}, * Feature Types: \dQuote{logical}, \dQuote{integer}, \dQuote{numeric}, \dQuote{character}, \dQuote{factor}, \dQuote{ordered}, * Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, 'stats'
+\itemize{
+\item Task type: \dQuote{classif}
+\item Predict Types: \dQuote{response}, \dQuote{prob}
+\item Feature Types: \dQuote{logical}, \dQuote{integer}, \dQuote{numeric}, \dQuote{character}, \dQuote{factor}, \dQuote{ordered}
+\item Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, 'stats'
+}
 }
 
 \section{Parameters}{
-
-, |Id          |Type    |Default |Levels      |Range                                |, |:-----------|:-------|:-------|:-----------|:------------------------------------|, |dispersion  |untyped |        |            |-                                    |, |epsilon     |numeric |1e-08   |            |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |, |etastart    |untyped |-       |            |-                                    |, |maxit       |numeric |25      |            |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |, |model       |logical |TRUE    |TRUE, FALSE |-                                    |, |mustart     |untyped |-       |            |-                                    |, |offset      |untyped |-       |            |-                                    |, |singular.ok |logical |TRUE    |TRUE, FALSE |-                                    |, |start       |untyped |        |            |-                                    |, |trace       |logical |FALSE   |TRUE, FALSE |-                                    |, |x           |logical |FALSE   |TRUE, FALSE |-                                    |, |y           |logical |TRUE    |TRUE, FALSE |-                                    |
+\tabular{lllll}{
+   Id \tab Type \tab Default \tab Levels \tab Range \cr
+   dispersion \tab untyped \tab  \tab  \tab - \cr
+   epsilon \tab numeric \tab 1e-08 \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   etastart \tab untyped \tab - \tab  \tab - \cr
+   maxit \tab numeric \tab 25 \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   model \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   mustart \tab untyped \tab - \tab  \tab - \cr
+   offset \tab untyped \tab - \tab  \tab - \cr
+   singular.ok \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   start \tab untyped \tab  \tab  \tab - \cr
+   trace \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   x \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   y \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+}
 }
 
 \section{Contrasts}{
@@ -101,6 +125,7 @@ Other Learner:
 \code{\link{mlr_learners_regr.kknn}},
 \code{\link{mlr_learners_regr.km}},
 \code{\link{mlr_learners_regr.lm}},
+\code{\link{mlr_learners_regr.nnet}},
 \code{\link{mlr_learners_regr.ranger}},
 \code{\link{mlr_learners_regr.svm}},
 \code{\link{mlr_learners_regr.xgboost}}
@@ -120,14 +145,14 @@ Other Learner:
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="base_learner"><a href='../../mlr3/html/Learner.html#method-Learner-base_learner'><code>mlr3::Learner$base_learner()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="format"><a href='../../mlr3/html/Learner.html#method-Learner-format'><code>mlr3::Learner$format()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="help"><a href='../../mlr3/html/Learner.html#method-Learner-help'><code>mlr3::Learner$help()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict"><a href='../../mlr3/html/Learner.html#method-Learner-predict'><code>mlr3::Learner$predict()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict_newdata"><a href='../../mlr3/html/Learner.html#method-Learner-predict_newdata'><code>mlr3::Learner$predict_newdata()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="print"><a href='../../mlr3/html/Learner.html#method-Learner-print'><code>mlr3::Learner$print()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="reset"><a href='../../mlr3/html/Learner.html#method-Learner-reset'><code>mlr3::Learner$reset()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="train"><a href='../../mlr3/html/Learner.html#method-Learner-train'><code>mlr3::Learner$train()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="base_learner"><a href='../../mlr3/html/Learner.html#method-Learner-base_learner'><code>mlr3::Learner$base_learner()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="format"><a href='../../mlr3/html/Learner.html#method-Learner-format'><code>mlr3::Learner$format()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="help"><a href='../../mlr3/html/Learner.html#method-Learner-help'><code>mlr3::Learner$help()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict"><a href='../../mlr3/html/Learner.html#method-Learner-predict'><code>mlr3::Learner$predict()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict_newdata"><a href='../../mlr3/html/Learner.html#method-Learner-predict_newdata'><code>mlr3::Learner$predict_newdata()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="print"><a href='../../mlr3/html/Learner.html#method-Learner-print'><code>mlr3::Learner$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="reset"><a href='../../mlr3/html/Learner.html#method-Learner-reset'><code>mlr3::Learner$reset()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="train"><a href='../../mlr3/html/Learner.html#method-Learner-train'><code>mlr3::Learner$train()</code></a></span></li>
 </ul>
 </details>
 }}

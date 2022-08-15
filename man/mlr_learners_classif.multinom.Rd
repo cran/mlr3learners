@@ -19,12 +19,36 @@ lrn("classif.multinom")
 
 \section{Meta Information}{
 
-, * Task type: \dQuote{classif}, * Predict Types: \dQuote{response}, \dQuote{prob}, * Feature Types: \dQuote{logical}, \dQuote{integer}, \dQuote{numeric}, \dQuote{factor}, * Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, \CRANpkg{nnet}
+\itemize{
+\item Task type: \dQuote{classif}
+\item Predict Types: \dQuote{response}, \dQuote{prob}
+\item Feature Types: \dQuote{logical}, \dQuote{integer}, \dQuote{numeric}, \dQuote{factor}
+\item Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, \CRANpkg{nnet}
+}
 }
 
 \section{Parameters}{
-
-, |Id       |Type      |Default |Levels      |Range                                |, |:--------|:---------|:-------|:-----------|:------------------------------------|, |Hess     |logical   |FALSE   |TRUE, FALSE |-                                    |, |abstol   |numeric   |1e-04   |            |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |, |censored |logical   |FALSE   |TRUE, FALSE |-                                    |, |decay    |numeric   |0       |            |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |, |entropy  |logical   |FALSE   |TRUE, FALSE |-                                    |, |mask     |untyped   |-       |            |-                                    |, |maxit    |integer   |100     |            |\eqn{[1, \infty)}{[1, Inf)}          |, |MaxNWts  |integer   |1000    |            |\eqn{[1, \infty)}{[1, Inf)}          |, |model    |logical   |FALSE   |TRUE, FALSE |-                                    |, |linout   |logical   |FALSE   |TRUE, FALSE |-                                    |, |rang     |numeric   |0.7     |            |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |, |reltol   |numeric   |1e-08   |            |\eqn{(-\infty, \infty)}{(-Inf, Inf)} |, |size     |integer   |-       |            |\eqn{[1, \infty)}{[1, Inf)}          |, |skip     |logical   |FALSE   |TRUE, FALSE |-                                    |, |softmax  |logical   |FALSE   |TRUE, FALSE |-                                    |, |summ     |character |0       |0, 1, 2, 3  |-                                    |, |trace    |logical   |TRUE    |TRUE, FALSE |-                                    |, |Wts      |untyped   |-       |            |-                                    |
+\tabular{lllll}{
+   Id \tab Type \tab Default \tab Levels \tab Range \cr
+   Hess \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   abstol \tab numeric \tab 1e-04 \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   censored \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   decay \tab numeric \tab 0 \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   entropy \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   mask \tab untyped \tab - \tab  \tab - \cr
+   maxit \tab integer \tab 100 \tab  \tab \eqn{[1, \infty)}{[1, Inf)} \cr
+   MaxNWts \tab integer \tab 1000 \tab  \tab \eqn{[1, \infty)}{[1, Inf)} \cr
+   model \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   linout \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   rang \tab numeric \tab 0.7 \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   reltol \tab numeric \tab 1e-08 \tab  \tab \eqn{(-\infty, \infty)}{(-Inf, Inf)} \cr
+   size \tab integer \tab - \tab  \tab \eqn{[1, \infty)}{[1, Inf)} \cr
+   skip \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   softmax \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
+   summ \tab character \tab 0 \tab 0, 1, 2, 3 \tab - \cr
+   trace \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   Wts \tab untyped \tab - \tab  \tab - \cr
+}
 }
 
 \examples{
@@ -70,6 +94,7 @@ Other Learner:
 \code{\link{mlr_learners_regr.kknn}},
 \code{\link{mlr_learners_regr.km}},
 \code{\link{mlr_learners_regr.lm}},
+\code{\link{mlr_learners_regr.nnet}},
 \code{\link{mlr_learners_regr.ranger}},
 \code{\link{mlr_learners_regr.svm}},
 \code{\link{mlr_learners_regr.xgboost}}
@@ -89,14 +114,14 @@ Other Learner:
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="base_learner"><a href='../../mlr3/html/Learner.html#method-Learner-base_learner'><code>mlr3::Learner$base_learner()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="format"><a href='../../mlr3/html/Learner.html#method-Learner-format'><code>mlr3::Learner$format()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="help"><a href='../../mlr3/html/Learner.html#method-Learner-help'><code>mlr3::Learner$help()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict"><a href='../../mlr3/html/Learner.html#method-Learner-predict'><code>mlr3::Learner$predict()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict_newdata"><a href='../../mlr3/html/Learner.html#method-Learner-predict_newdata'><code>mlr3::Learner$predict_newdata()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="print"><a href='../../mlr3/html/Learner.html#method-Learner-print'><code>mlr3::Learner$print()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="reset"><a href='../../mlr3/html/Learner.html#method-Learner-reset'><code>mlr3::Learner$reset()</code></a></li>
-<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="train"><a href='../../mlr3/html/Learner.html#method-Learner-train'><code>mlr3::Learner$train()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="base_learner"><a href='../../mlr3/html/Learner.html#method-Learner-base_learner'><code>mlr3::Learner$base_learner()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="format"><a href='../../mlr3/html/Learner.html#method-Learner-format'><code>mlr3::Learner$format()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="help"><a href='../../mlr3/html/Learner.html#method-Learner-help'><code>mlr3::Learner$help()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict"><a href='../../mlr3/html/Learner.html#method-Learner-predict'><code>mlr3::Learner$predict()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="predict_newdata"><a href='../../mlr3/html/Learner.html#method-Learner-predict_newdata'><code>mlr3::Learner$predict_newdata()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="print"><a href='../../mlr3/html/Learner.html#method-Learner-print'><code>mlr3::Learner$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="reset"><a href='../../mlr3/html/Learner.html#method-Learner-reset'><code>mlr3::Learner$reset()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="train"><a href='../../mlr3/html/Learner.html#method-Learner-train'><code>mlr3::Learner$train()</code></a></span></li>
 </ul>
 </details>
 }}
