@@ -1,6 +1,6 @@
 Package: mlr3learners
 Title: Recommended Learners for 'mlr3'
-Version: 0.5.5
+Version: 0.5.6
 Authors@R: c(
     person("Michel", "Lang", , "michellang@gmail.com", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0001-9754-0393")),
@@ -29,12 +29,23 @@ Suggests: DiceKriging, e1071, glmnet, kknn, knitr, lgr, MASS, nnet,
 Config/testthat/edition: 3
 Encoding: UTF-8
 NeedsCompilation: no
-RoxygenNote: 7.2.1
-Packaged: 2022-11-07 13:10:51 UTC; michel
+RoxygenNote: 7.2.3
+Collate: 'aaa.R' 'LearnerClassifCVGlmnet.R' 'LearnerClassifGlmnet.R'
+        'LearnerClassifKKNN.R' 'LearnerClassifLDA.R'
+        'LearnerClassifLogReg.R' 'LearnerClassifMultinom.R'
+        'LearnerClassifNaiveBayes.R' 'LearnerClassifNnet.R'
+        'LearnerClassifQDA.R' 'LearnerClassifRanger.R'
+        'LearnerClassifSVM.R' 'LearnerClassifXgboost.R'
+        'LearnerRegrCVGlmnet.R' 'LearnerRegrGlmnet.R'
+        'LearnerRegrKKNN.R' 'LearnerRegrKM.R' 'LearnerRegrLM.R'
+        'LearnerRegrNnet.R' 'LearnerRegrRanger.R' 'LearnerRegrSVM.R'
+        'LearnerRegrXgboost.R' 'bibentries.R' 'helpers.R'
+        'helpers_glmnet.R' 'helpers_ranger.R' 'zzz.R'
+Packaged: 2023-01-06 14:26:38 UTC; michel
 Author: Michel Lang [cre, aut] (<https://orcid.org/0000-0001-9754-0393>),
   Quay Au [aut] (<https://orcid.org/0000-0002-5252-8902>),
   Stefan Coors [aut] (<https://orcid.org/0000-0002-7465-2146>),
   Patrick Schratz [aut] (<https://orcid.org/0000-0003-0748-6624>)
 Maintainer: Michel Lang <michellang@gmail.com>
 Repository: CRAN
-Date/Publication: 2022-11-07 13:40:02 UTC
+Date/Publication: 2023-01-06 22:30:21 UTC
