@@ -25,7 +25,7 @@ lrn("classif.nnet")
 \itemize{
 \item Task type: \dQuote{classif}
 \item Predict Types: \dQuote{response}, \dQuote{prob}
-\item Feature Types: \dQuote{numeric}, \dQuote{factor}, \dQuote{ordered}
+\item Feature Types: \dQuote{integer}, \dQuote{numeric}, \dQuote{factor}, \dQuote{ordered}
 \item Required Packages: \CRANpkg{mlr3}, \CRANpkg{mlr3learners}, \CRANpkg{nnet}
 }
 }
@@ -49,6 +49,7 @@ lrn("classif.nnet")
    skip \tab logical \tab FALSE \tab TRUE, FALSE \tab - \cr
    subset \tab untyped \tab - \tab  \tab - \cr
    trace \tab logical \tab TRUE \tab TRUE, FALSE \tab - \cr
+   formula \tab untyped \tab - \tab  \tab - \cr
 }
 }
 
@@ -63,13 +64,39 @@ lrn("classif.nnet")
 }
 }
 
+\section{Custom mlr3 parameters}{
+
+\itemize{
+\item \code{formula}: if not provided, the formula is set to \code{task$formula()}.
+}
+}
+
 \examples{
 if (requireNamespace("nnet", quietly = TRUE)) {
-  learner = mlr3::lrn("classif.nnet")
-  print(learner)
+# Define the Learner and set parameter values
+learner = lrn("classif.nnet")
+print(learner)
 
-  # available parameters:
-learner$param_set$ids()
+# Define a Task
+task = tsk("sonar")
+
+# Create train and test set
+ids = partition(task)
+
+# Train the learner on the training ids
+learner$train(task, row_ids = ids$train)
+
+# print the model
+print(learner$model)
+
+# importance method
+if("importance" \%in\% learner$properties) print(learner$importance)
+
+# Make predictions for the test rows
+predictions = learner$predict(task, row_ids = ids$test)
+
+# Score the predictions
+predictions$score()
 }
 }
 \references{
@@ -81,7 +108,7 @@ Cambridge University Press.
 \seealso{
 \itemize{
 \item Chapter in the \href{https://mlr3book.mlr-org.com/}{mlr3book}:
-\url{https://mlr3book.mlr-org.com/basics.html#learners}
+\url{https://mlr3book.mlr-org.com/chapters/chapter2/data_and_basic_modeling.html#sec-learners}
 \item Package \href{https://github.com/mlr-org/mlr3extralearners}{mlr3extralearners} for more learners.
 \item \link[mlr3misc:Dictionary]{Dictionary} of \link[=Learner]{Learners}: \link{mlr_learners}
 \item \code{as.data.table(mlr_learners)} for a table of available \link[=Learner]{Learners} in the running session (depending on the loaded packages).

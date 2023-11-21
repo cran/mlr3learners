@@ -44,11 +44,12 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
         importance                   = p_fct(c("none", "impurity", "impurity_corrected", "permutation"), tags = "train"),
         keep.inbag                   = p_lgl(default = FALSE, tags = "train"),
         max.depth                    = p_int(default = NULL, lower = 0L, special_vals = list(NULL), tags = "train"),
+        min.bucket                   = p_int(1L, default = 1L, tags = "train"),
         min.node.size                = p_int(1L, default = NULL, special_vals = list(NULL), tags = "train"),
-        min.prop                     = p_dbl(default = 0.1, tags = "train"),
         minprop                      = p_dbl(default = 0.1, tags = "train"),
         mtry                         = p_int(lower = 1L, special_vals = list(NULL), tags = "train"),
         mtry.ratio                   = p_dbl(lower = 0, upper = 1, tags = "train"),
+        node.stats                   = p_lgl(default = FALSE, tags = "train"),
         num.random.splits            = p_int(1L, default = 1L, tags = "train"),
         num.threads                  = p_int(1L, default = 1L, tags = c("train", "predict", "threads")),
         num.trees                    = p_int(1L, default = 500L, tags = c("train", "predict", "hotstart")),
@@ -80,6 +81,7 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
         feature_types = c("logical", "integer", "numeric", "character", "factor", "ordered"),
         properties = c("weights", "twoclass", "multiclass", "importance", "oob_error", "hotstart_backward"),
         packages = c("mlr3learners", "ranger"),
+        label = "Random Forest",
         man = "mlr3learners::mlr_learners_classif.ranger"
       )
     },
@@ -131,8 +133,10 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
       newdata = ordered_features(task, self)
 
       prediction = invoke(predict,
-        self$model, data = newdata,
-        predict.type = "response", .args = pv)
+        self$model,
+        data = newdata,
+        predict.type = "response", .args = pv
+      )
 
       if (self$predict_type == "response") {
         list(response = prediction$predictions)

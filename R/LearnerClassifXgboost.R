@@ -48,9 +48,10 @@
 #'
 #' @export
 #' @template seealso_learner
-#' @template example
+#' @template example_dontrun
 #' @examples
 #'
+#' \dontrun{
 #' # Train learner with early stopping on spam data set
 #' task = tsk("spam")
 #'
@@ -60,13 +61,14 @@
 #'
 #' # Set early stopping parameter
 #' learner = lrn("classif.xgboost",
-#'   nrounds = 1000,
-#'   early_stopping_rounds = 100,
+#'   nrounds = 100,
+#'   early_stopping_rounds = 10,
 #'   early_stopping_set = "test"
 #' )
 #'
 #' # Train learner with early stopping
 #' learner$train(task)
+#' }
 LearnerClassifXgboost = R6Class("LearnerClassifXgboost",
   inherit = LearnerClassif,
 
@@ -84,6 +86,7 @@ LearnerClassifXgboost = R6Class("LearnerClassifXgboost",
         colsample_bylevel           = p_dbl(0, 1, default = 1, tags = "train"),
         colsample_bynode            = p_dbl(0, 1, default = 1, tags = "train"),
         colsample_bytree            = p_dbl(0, 1, default = 1, tags = c("train", "control")),
+        device                      = p_uty(default = "cpu", tags = "train"),
         disable_default_eval_metric = p_lgl(default = FALSE, tags = "train"),
         early_stopping_rounds       = p_int(1L, default = NULL, special_vals = list(NULL), tags = "train"),
         early_stopping_set          = p_fct(c("none", "train", "test"), default = "none", tags = "train"),
@@ -104,7 +107,7 @@ LearnerClassifXgboost = R6Class("LearnerClassifXgboost",
         maximize                    = p_lgl(default = NULL, special_vals = list(NULL), tags = "train"),
         min_child_weight            = p_dbl(0, default = 1, tags = c("train", "control")),
         missing                     = p_dbl(default = NA, tags = c("train", "predict"), special_vals = list(NA, NA_real_, NULL)),
-        monotone_constraints        = p_uty(default = 0, tags = c("train", "control"), custom_check = function(x) {  checkmate::check_integerish(x, lower = -1, upper = 1, any.missing = FALSE) }), # nolint
+        monotone_constraints        = p_uty(default = 0, tags = c("train", "control"), custom_check = crate(function(x) { checkmate::check_integerish(x, lower = -1, upper = 1, any.missing = FALSE) })), # nolint
         normalize_type              = p_fct(c("tree", "forest"), default = "tree", tags = "train"),
         nrounds                     = p_int(1L, tags = c("train", "hotstart")),
         nthread                     = p_int(1L, default = 1L, tags = c("train", "control", "threads")),
@@ -114,7 +117,6 @@ LearnerClassifXgboost = R6Class("LearnerClassifXgboost",
         one_drop                    = p_lgl(default = FALSE, tags = "train"),
         outputmargin                = p_lgl(default = FALSE, tags = "predict"),
         predcontrib                 = p_lgl(default = FALSE, tags = "predict"),
-        predictor                   = p_fct(c("cpu_predictor", "gpu_predictor"), default = "cpu_predictor", tags = "train"),
         predinteraction             = p_lgl(default = FALSE, tags = "predict"),
         predleaf                    = p_lgl(default = FALSE, tags = "predict"),
         print_every_n               = p_int(1L, default = 1L, tags = "train"),
@@ -169,6 +171,7 @@ LearnerClassifXgboost = R6Class("LearnerClassifXgboost",
         feature_types = c("logical", "integer", "numeric"),
         properties = c("weights", "missings", "twoclass", "multiclass", "importance", "hotstart_forward"),
         packages = c("mlr3learners", "xgboost"),
+        label = "Extreme Gradient Boosting",
         man = "mlr3learners::mlr_learners_classif.xgboost"
       )
     },

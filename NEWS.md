@@ -1,4 +1,10 @@
-# mlr3learners 0.5.5
+# mlr3learners 0.5.7
+
+* Added labels to learners.
+* Added formula argument to `nnet` learner and support feature type `"integer"`.
+* Added `min.bucket` parameter to `classif.ranger` and `regr.ranger`.
+
+# mlr3learners 0.5.6
 
 - Enable new early stopping mechanism for xgboost.
 - Improved documentation.
