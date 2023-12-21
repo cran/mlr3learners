@@ -1,6 +1,6 @@
 Package: mlr3learners
 Title: Recommended Learners for 'mlr3'
-Version: 0.5.7
+Version: 0.5.8
 Authors@R: c(
     person("Michel", "Lang", , "michellang@gmail.com", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0001-9754-0393")),
@@ -41,11 +41,11 @@ Collate: 'aaa.R' 'LearnerClassifCVGlmnet.R' 'LearnerClassifGlmnet.R'
         'LearnerRegrNnet.R' 'LearnerRegrRanger.R' 'LearnerRegrSVM.R'
         'LearnerRegrXgboost.R' 'bibentries.R' 'helpers.R'
         'helpers_glmnet.R' 'helpers_ranger.R' 'zzz.R'
-Packaged: 2023-11-21 08:11:37 UTC; michel
+Packaged: 2023-12-21 10:54:59 UTC; marc
 Author: Michel Lang [cre, aut] (<https://orcid.org/0000-0001-9754-0393>),
   Quay Au [aut] (<https://orcid.org/0000-0002-5252-8902>),
   Stefan Coors [aut] (<https://orcid.org/0000-0002-7465-2146>),
   Patrick Schratz [aut] (<https://orcid.org/0000-0003-0748-6624>)
 Maintainer: Michel Lang <michellang@gmail.com>
 Repository: CRAN
-Date/Publication: 2023-11-21 14:20:03 UTC
+Date/Publication: 2023-12-21 11:40:06 UTC
