@@ -1,6 +1,6 @@
 Package: mlr3learners
 Title: Recommended Learners for 'mlr3'
-Version: 0.5.8
+Version: 0.6.0
 Authors@R: c(
     person("Michel", "Lang", , "michellang@gmail.com", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0001-9754-0393")),
@@ -21,7 +21,7 @@ License: LGPL-3
 URL: https://mlr3learners.mlr-org.com,
         https://github.com/mlr-org/mlr3learners
 BugReports: https://github.com/mlr-org/mlr3learners/issues
-Depends: mlr3 (>= 0.14.1), R (>= 3.1.0)
+Depends: mlr3 (>= 0.17.1), R (>= 3.1.0)
 Imports: checkmate, data.table, mlr3misc (>= 0.9.4), paradox, R6
 Suggests: DiceKriging, e1071, glmnet, kknn, knitr, lgr, MASS, nnet,
         pracma, ranger, rgenoud, rmarkdown, testthat (>= 3.0.0),
@@ -29,7 +29,7 @@ Suggests: DiceKriging, e1071, glmnet, kknn, knitr, lgr, MASS, nnet,
 Config/testthat/edition: 3
 Encoding: UTF-8
 NeedsCompilation: no
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Collate: 'aaa.R' 'LearnerClassifCVGlmnet.R' 'LearnerClassifGlmnet.R'
         'LearnerClassifKKNN.R' 'LearnerClassifLDA.R'
         'LearnerClassifLogReg.R' 'LearnerClassifMultinom.R'
@@ -41,11 +41,11 @@ Collate: 'aaa.R' 'LearnerClassifCVGlmnet.R' 'LearnerClassifGlmnet.R'
         'LearnerRegrNnet.R' 'LearnerRegrRanger.R' 'LearnerRegrSVM.R'
         'LearnerRegrXgboost.R' 'bibentries.R' 'helpers.R'
         'helpers_glmnet.R' 'helpers_ranger.R' 'zzz.R'
-Packaged: 2023-12-21 10:54:59 UTC; marc
+Packaged: 2024-03-13 07:36:00 UTC; marc
 Author: Michel Lang [cre, aut] (<https://orcid.org/0000-0001-9754-0393>),
   Quay Au [aut] (<https://orcid.org/0000-0002-5252-8902>),
   Stefan Coors [aut] (<https://orcid.org/0000-0002-7465-2146>),
   Patrick Schratz [aut] (<https://orcid.org/0000-0003-0748-6624>)
 Maintainer: Michel Lang <michellang@gmail.com>
 Repository: CRAN
-Date/Publication: 2023-12-21 11:40:06 UTC
+Date/Publication: 2024-03-13 09:30:02 UTC
