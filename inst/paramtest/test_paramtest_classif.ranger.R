@@ -18,7 +18,9 @@ test_that("classif.ranger", {
     "status.variable.name", # handled via mlr3
     "classification", # handled via mlr3
     "mtry.ratio", # custom hyperpar
-    "time.interest" # survival only
+    "time.interest", # survival only
+    "alpha", # survival only
+    "minprop" # survival only
   )
 
   ParamTest = run_paramtest(learner, fun, exclude, tag = "train")
@@ -34,13 +36,14 @@ test_that("predict classif.ranger", {
   learner = lrn("classif.ranger")
   fun = ranger:::predict.ranger
   exclude = c(
-    "quantiles", # required type not supported in mlr3
-    "what", # required type (quantiles) not supported in mlr3
+    "quantiles", # not supported by classification
+    "what", # not supported by classification
     "predict.all", # not supported in mlr3
     "formula", # handled via mlr3
     "object", # handled via mlr3
     "data", # handled via mlr3
-    "type" # handled via mlr3
+    "type", # handled via mlr3
+    "se.method" # regression only
   )
 
   ParamTest = run_paramtest(learner, fun, exclude, tag = "predict")

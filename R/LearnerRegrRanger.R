@@ -27,15 +27,13 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
     #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
       ps = ps(
-        alpha                        = p_dbl(default = 0.5, tags = "train", depends = quote(splitrule == "maxstat")),
         always.split.variables       = p_uty(tags = "train"),
         holdout                      = p_lgl(default = FALSE, tags = "train"),
         importance                   = p_fct(c("none", "impurity", "impurity_corrected", "permutation"), tags = "train"),
         keep.inbag                   = p_lgl(default = FALSE, tags = "train"),
-        max.depth                    = p_int(default = NULL, lower = 0L, special_vals = list(NULL), tags = "train"),
+        max.depth                    = p_int(default = NULL, lower = 1L, special_vals = list(NULL), tags = "train"),
         min.bucket                   = p_int(1L, default = 1L, tags = "train"),
         min.node.size                = p_int(1L, default = 5L, special_vals = list(NULL), tags = "train"),
-        minprop                      = p_dbl(default = 0.1, tags = "train", depends = quote(splitrule == "maxstat")),
         mtry                         = p_int(lower = 1L, special_vals = list(NULL), tags = "train"),
         mtry.ratio                   = p_dbl(lower = 0, upper = 1, tags = "train"),
         node.stats                   = p_lgl(default = FALSE, tags = "train"),
@@ -43,11 +41,10 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
         num.threads                  = p_int(1L, default = 1L, tags = c("train", "predict", "threads")),
         num.trees                    = p_int(1L, default = 500L, tags = c("train", "predict", "hotstart")),
         oob.error                    = p_lgl(default = TRUE, tags = "train"),
-        quantreg                     = p_lgl(default = FALSE, tags = "train"),
         regularization.factor        = p_uty(default = 1, tags = "train"),
         regularization.usedepth      = p_lgl(default = FALSE, tags = "train"),
         replace                      = p_lgl(default = TRUE, tags = "train"),
-        respect.unordered.factors    = p_fct(c("ignore", "order", "partition"), default = "ignore", tags = "train"),
+        respect.unordered.factors    = p_fct(c("ignore", "order", "partition"), tags = "train"),
         sample.fraction              = p_dbl(0L, 1L, tags = "train"),
         save.memory                  = p_lgl(default = FALSE, tags = "train"),
         scale.permutation.importance = p_lgl(default = FALSE, tags = "train", depends = quote(importance == "permutation")),
@@ -64,7 +61,7 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
       super$initialize(
         id = "regr.ranger",
         param_set = ps,
-        predict_types = c("response", "se"),
+        predict_types = c("response", "se", "quantiles"),
         feature_types = c("logical", "integer", "numeric", "character", "factor", "ordered"),
         properties = c("weights", "importance", "oob_error", "hotstart_backward"),
         packages = c("mlr3learners", "ranger"),
@@ -111,6 +108,10 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
         pv$keep.inbag = TRUE # nolint
       }
 
+      if (self$predict_type == "quantiles") {
+        pv$quantreg = TRUE # nolint
+      }
+
       invoke(ranger::ranger,
         dependent.variable.name = task$target_names,
         data = task$data(),
@@ -123,12 +124,24 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
       pv = self$param_set$get_values(tags = "predict")
       newdata = ordered_features(task, self)
 
-      prediction = invoke(predict, self$model, data = newdata, type = self$predict_type, .args = pv)
+      prediction = invoke(predict, self$model,
+        data = newdata,
+        type = self$predict_type,
+        quantiles = private$.quantiles,
+        .args = pv)
+
+      if (self$predict_type == "quantiles") {
+        quantiles = prediction$predictions
+        attr(quantiles, "probs") = private$.quantiles
+        attr(quantiles, "response") = private$.quantile_response
+        return(list(quantiles = quantiles))
+      }
+
       list(response = prediction$predictions, se = prediction$se)
     },
 
     .hotstart = function(task) {
-      model = self$model
+      model = self$models
       model$num.trees = self$param_set$values$num.trees
       model
     }

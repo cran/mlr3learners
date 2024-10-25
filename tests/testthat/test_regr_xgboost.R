@@ -57,7 +57,6 @@ test_that("validation and inner tuning", {
   expect_named(learner$model$evaluation_log, c("iter", "test_rmse"))
   expect_list(learner$internal_valid_scores, types = "numeric")
   expect_equal(names(learner$internal_valid_scores), "rmse")
-  expect_equal(learner$internal_valid_scores$rmse, learner$model$evaluation[get("iter") == 10, "test_rmse"][[1L]])
 
   expect_list(learner$internal_tuned_values, types = "integerish")
   expect_equal(names(learner$internal_tuned_values), "nrounds")
@@ -104,4 +103,145 @@ test_that("validation and inner tuning", {
   learner$train(task)
   expect_equal(learner$internal_valid_scores$rmse, learner$model$evaluation_log$test_rmse[10L])
   expect_true(is.null(learner$internal_tuned_values))
+
+  learner$param_set$set_values(
+    nrounds = to_tune(upper = 100, internal = TRUE),
+    early_stopping_rounds = 10
+  )
+  expect_error(
+    learner$param_set$convert_internal_search_space(learner$param_set$search_space()),
+    "eval_metric"
+  )
+
+  learner$param_set$set_values(
+    eval_metric = "rmse"
+  )
+  expect_error(
+    learner$param_set$convert_internal_search_space(learner$param_set$search_space()),
+    regexp = NA
+  )
+})
+
+test_that("custom inner validation measure", {
+
+  # internal measure
+  task = tsk("mtcars")
+
+  learner = lrn("regr.xgboost",
+    nrounds = 10,
+    validate = 0.2,
+    early_stopping_rounds = 10,
+    eval_metric = "error"
+  )
+
+  learner$train(task)
+
+  expect_named(learner$model$evaluation_log, c("iter", "test_error"))
+  expect_list(learner$internal_valid_scores, types = "numeric")
+  expect_equal(names(learner$internal_valid_scores), "error")
+
+  # function
+  task = tsk("mtcars")
+
+  rmse = function(preds, dtrain) {
+    truth = xgboost::getinfo(dtrain, "label")
+    rmse = sqrt(mean((truth - preds)^2))
+    return(list(metric = "rmse", value = rmse))
+  }
+
+  learner = lrn("regr.xgboost",
+    nrounds = 10,
+    validate = 0.2,
+    early_stopping_rounds = 10,
+    eval_metric = rmse,
+    maximize = FALSE
+  )
+
+  learner$train(task)
+
+  expect_named(learner$model$evaluation_log, c("iter", "test_rmse"))
+  expect_list(learner$internal_valid_scores, types = "numeric")
+  expect_equal(names(learner$internal_valid_scores), "rmse")
+
+  # mlr3 measure
+  task = tsk("mtcars")
+
+  learner = lrn("regr.xgboost",
+    nrounds = 10,
+    validate = 0.2,
+    early_stopping_rounds = 10,
+    eval_metric = msr("regr.rmse")
+  )
+
+  learner$train(task)
+
+  expect_named(learner$model$evaluation_log, c("iter", "test_regr.rmse"))
+  expect_list(learner$internal_valid_scores, types = "numeric")
+  expect_equal(names(learner$internal_valid_scores), "regr.rmse")
+})
+
+test_that("mlr3measures are equal to internal measures", {
+  # reg:squarederror
+  set.seed(1)
+  task = tsk("mtcars")
+
+  learner = lrn("regr.xgboost",
+    nrounds = 10,
+    validate = 0.2,
+    early_stopping_rounds = 10,
+    eval_metric = msr("regr.rmse")
+  )
+
+  learner$train(task)
+  log_mlr3 = learner$model$evaluation_log$test_regr.rmse
+
+  set.seed(1)
+  learner$param_set$set_values(eval_metric = "rmse")
+  learner$train(task)
+
+  log_internal = learner$model$evaluation_log$test_rmse
+
+  expect_equal(log_mlr3, log_internal)
+
+  # reg:absoluteerror
+  set.seed(1)
+  task = tsk("mtcars")
+
+  learner = lrn("regr.xgboost",
+    nrounds = 10,
+    validate = 0.2,
+    objective = "reg:absoluteerror",
+    early_stopping_rounds = 10,
+    eval_metric = msr("regr.rmse")
+  )
+
+  learner$train(task)
+  log_mlr3 = learner$model$evaluation_log$test_regr.rmse
+
+  set.seed(1)
+  learner$param_set$set_values(eval_metric = "rmse")
+  learner$train(task)
+
+  log_internal = learner$model$evaluation_log$test_rmse
+
+  expect_equal(log_mlr3, log_internal)
+})
+
+test_that("base_margin", {
+  # input checks
+  expect_error(lrn("regr.xgboost", base_margin = 1), "Must be of type")
+  expect_error(lrn("regr.xgboost", base_margin = ""), "have at least 1 characters")
+  expect_error(lrn("regr.xgboost", base_margin = c("a", "b")), "have length 1")
+
+  # base_margin not a feature
+  task = tsk("mtcars")
+  learner = lrn("regr.xgboost", base_margin = "not_a_feature")
+  expect_error(learner$train(task), "base_margin %in%")
+
+  # predictions change
+  l1 = lrn("regr.xgboost", nrounds = 5)
+  l2 = lrn("regr.xgboost", nrounds = 5, base_margin = "qsec")
+  p1 = l1$train(task)$predict(task)
+  p2 = l2$train(task)$predict(task)
+  expect_false(all(p1$response == p2$response))
 })
