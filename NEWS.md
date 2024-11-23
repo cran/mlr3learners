@@ -1,3 +1,9 @@
+# mlr3learners 0.9.0
+
+* BREAKING CHANGE: Remove ``$loglik()`` method from all learners.
+* feat: Update hyperparameter set of `lrn("classif.ranger")` and `lrn("regr.ranger")` for 0.17.0, adding `na.action` parameter and `"missings"` property, and `poisson` splitrule for regression with a new `poisson.tau` parameter.
+* compatibility: mlr3 0.22.0.
+
 # mlr3learners 0.8.0
 
 * fix: Hyperparameter set of `lrn("classif.ranger")` and `lrn("regr.ranger")`.
