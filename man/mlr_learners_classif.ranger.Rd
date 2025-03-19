@@ -175,6 +175,7 @@ Other Learner:
 \item \href{#method-LearnerClassifRanger-new}{\code{LearnerClassifRanger$new()}}
 \item \href{#method-LearnerClassifRanger-importance}{\code{LearnerClassifRanger$importance()}}
 \item \href{#method-LearnerClassifRanger-oob_error}{\code{LearnerClassifRanger$oob_error()}}
+\item \href{#method-LearnerClassifRanger-selected_features}{\code{LearnerClassifRanger$selected_features()}}
 \item \href{#method-LearnerClassifRanger-clone}{\code{LearnerClassifRanger$clone()}}
 }
 }
@@ -182,6 +183,7 @@ Other Learner:
 <details><summary>Inherited methods</summary>
 <ul>
 <li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="base_learner"><a href='../../mlr3/html/Learner.html#method-Learner-base_learner'><code>mlr3::Learner$base_learner()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="configure"><a href='../../mlr3/html/Learner.html#method-Learner-configure'><code>mlr3::Learner$configure()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="encapsulate"><a href='../../mlr3/html/Learner.html#method-Learner-encapsulate'><code>mlr3::Learner$encapsulate()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="format"><a href='../../mlr3/html/Learner.html#method-Learner-format'><code>mlr3::Learner$format()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="mlr3" data-topic="Learner" data-id="help"><a href='../../mlr3/html/Learner.html#method-Learner-help'><code>mlr3::Learner$help()</code></a></span></li>
@@ -229,6 +231,19 @@ The out-of-bag error, extracted from model slot \code{prediction.error}.
 
 \subsection{Returns}{
 \code{numeric(1)}.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-LearnerClassifRanger-selected_features"></a>}}
+\if{latex}{\out{\hypertarget{method-LearnerClassifRanger-selected_features}{}}}
+\subsection{Method \code{selected_features()}}{
+The set of features used for node splitting in the forest.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{LearnerClassifRanger$selected_features()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{character()}.
 }
 }
 \if{html}{\out{<hr>}}

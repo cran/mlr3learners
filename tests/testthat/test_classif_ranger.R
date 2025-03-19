@@ -3,7 +3,7 @@ skip_if_not_installed("ranger")
 test_that("autotest", {
   learner = mlr3::lrn("classif.ranger")
   expect_learner(learner)
-  learner$param_set$values = list(num.trees = 30L, importance = "impurity")
+  learner$param_set$set_values(num.trees = 30L, importance = "impurity")
   result = run_autotest(learner)
   expect_true(result, info = result$error)
 })
@@ -87,4 +87,13 @@ test_that("default_values", {
 
   values = default_values(learner, search_space, task)
   expect_names(names(values), permutation.of =  c("replace", "sample.fraction", "num.trees", "mtry.ratio"))
+})
+
+test_that("selected_features", {
+  learner = lrn("classif.ranger")
+  expect_error(learner$selected_features())
+
+  task = tsk("iris")
+  learner$train(task)
+  expect_set_equal(learner$selected_features(), c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"))
 })

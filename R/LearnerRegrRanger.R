@@ -58,14 +58,14 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
         write.forest                 = p_lgl(default = TRUE, tags = "train")
       )
 
-      ps$values = list(num.threads = 1L)
+      ps$set_values(num.threads = 1L)
 
       super$initialize(
         id = "regr.ranger",
         param_set = ps,
         predict_types = c("response", "se", "quantiles"),
         feature_types = c("logical", "integer", "numeric", "character", "factor", "ordered"),
-        properties = c("weights", "importance", "oob_error", "hotstart_backward", "missings"),
+        properties = c("weights", "importance", "oob_error", "hotstart_backward", "missings", "selected_features"),
         packages = c("mlr3learners", "ranger"),
         label = "Random Forest",
         man = "mlr3learners::mlr_learners_regr.ranger"
@@ -98,6 +98,14 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
         stopf("No model stored")
       }
       self$model$prediction.error
+    },
+
+    #' @description
+    #' The set of features used for node splitting in the forest.
+    #'
+    #' @return `character()`.
+    selected_features = function() {
+      ranger_selected_features(self)
     }
   ),
 
