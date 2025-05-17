@@ -7,7 +7,6 @@ Package website: [release](https://mlr3learners.mlr-org.com/) | [dev](https://ml
 [![r-cmd-check](https://github.com/mlr-org/mlr3learners/actions/workflows/r-cmd-check.yml/badge.svg)](https://github.com/mlr-org/mlr3learners/actions/workflows/r-cmd-check.yml)
 [![Parameter Check](https://github.com/mlr-org/mlr3learners/workflows/Parameter%20Check/badge.svg?branch=main)](https://github.com/mlr-org/mlr3learners/actions)
 [![CRAN Status](https://www.r-pkg.org/badges/version-ago/mlr3learners)](https://cran.r-project.org/package=mlr3learners)
-[![StackOverflow](https://img.shields.io/badge/stackoverflow-mlr3-orange.svg)](https://stackoverflow.com/questions/tagged/mlr3)
 [![Mattermost](https://img.shields.io/badge/chat-mattermost-orange.svg)](https://lmmisld-lmu-stats-slds.srv.mwn.de/mlr_invite/)
 
 <!-- badges: end -->
@@ -44,7 +43,6 @@ remotes::install_github("mlr-org/mlr3learners", dependencies = TRUE)
 | :------------------------------------------------------------------------------------------------------ | :---------------------------- | :---------------------------------------------------- |
 | [classif.cv_glmnet](https://mlr3learners.mlr-org.com/reference/mlr_learners_classif.cv_glmnet.html)     | Penalized Logistic Regression | [glmnet](https://cran.r-project.org/package=glmnet)   |
 | [classif.glmnet](https://mlr3learners.mlr-org.com/reference/mlr_learners_classif.glmnet.html)           | Penalized Logistic Regression | [glmnet](https://cran.r-project.org/package=glmnet)   |
-| [classif.kknn](https://mlr3learners.mlr-org.com/reference/mlr_learners_classif.kknn.html)               | k-Nearest Neighbors           | [kknn](https://cran.r-project.org/package=kknn)       |
 | [classif.lda](https://mlr3learners.mlr-org.com/reference/mlr_learners_classif.lda.html)                 | LDA                           | [MASS](https://cran.r-project.org/package=MASS)       |
 | [classif.log_reg](https://mlr3learners.mlr-org.com/reference/mlr_learners_classif.log_reg.html)         | Logistic Regression           | stats                                                 |
 | [classif.multinom](https://mlr3learners.mlr-org.com/reference/mlr_learners_classif.multinom.html)       | Multinomial log-linear model  | [nnet](https://cran.r-project.org/package=nnet)       |
@@ -61,7 +59,6 @@ remotes::install_github("mlr-org/mlr3learners", dependencies = TRUE)
 | :-------------------------------------------------------------------------------------------- | :-------------------------- | :------------------------------------------------------------ |
 | [regr.cv_glmnet](https://mlr3learners.mlr-org.com/reference/mlr_learners_regr.cv_glmnet.html) | Penalized Linear Regression | [glmnet](https://cran.r-project.org/package=glmnet)           |
 | [regr.glmnet](https://mlr3learners.mlr-org.com/reference/mlr_learners_regr.glmnet.html)       | Penalized Linear Regression | [glmnet](https://cran.r-project.org/package=glmnet)           |
-| [regr.kknn](https://mlr3learners.mlr-org.com/reference/mlr_learners_regr.kknn.html)           | k-Nearest Neighbors         | [kknn](https://cran.r-project.org/package=kknn)               |
 | [regr.km](https://mlr3learners.mlr-org.com/reference/mlr_learners_regr.km.html)               | Kriging                     | [DiceKriging](https://cran.r-project.org/package=DiceKriging) |
 | [regr.lm](https://mlr3learners.mlr-org.com/reference/mlr_learners_regr.lm.html)               | Linear Regression           | stats                                                         |
 | [regr.nnet](https://mlr3learners.mlr-org.com/reference/mlr_learners_regr.nnet.html)           | Single Layer Neural Network | nnet                                                          |

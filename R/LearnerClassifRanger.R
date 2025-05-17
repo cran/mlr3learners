@@ -131,11 +131,12 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
     .train = function(task) {
       pv = self$param_set$get_values(tags = "train")
       pv = convert_ratio(pv, "mtry", "mtry.ratio", length(task$feature_names))
+      pv$case.weights = get_weights(task, private)
+
       invoke(ranger::ranger,
         dependent.variable.name = task$target_names,
         data = task$data(),
         probability = self$predict_type == "prob",
-        case.weights = task$weights$weight,
         .args = pv
       )
     },
