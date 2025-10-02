@@ -1,6 +1,6 @@
 Package: mlr3learners
 Title: Recommended Learners for 'mlr3'
-Version: 0.12.0
+Version: 0.13.0
 Authors@R: c(
     person("Michel", "Lang", , "michellang@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0001-9754-0393")),
@@ -25,16 +25,16 @@ License: LGPL-3
 URL: https://mlr3learners.mlr-org.com,
         https://github.com/mlr-org/mlr3learners
 BugReports: https://github.com/mlr-org/mlr3learners/issues
-Depends: mlr3 (>= 0.23.0), R (>= 3.1.0)
+Depends: mlr3 (>= 1.2.0), R (>= 3.3.0)
 Imports: checkmate, data.table, mlr3misc (>= 0.9.4), paradox (>=
         1.0.0), R6
-Suggests: DiceKriging, e1071, glmnet, kknn, knitr, lgr, MASS, nnet,
-        pracma, ranger, rgenoud, rmarkdown, testthat (>= 3.0.0),
-        xgboost (>= 1.6.0)
+Suggests: DiceKriging, e1071, future, glmnet, kknn, knitr, lgr, MASS,
+        mirai, nnet, pracma, ranger, rgenoud, rmarkdown, testthat (>=
+        3.0.0), xgboost (>= 1.6.0)
 Config/testthat/edition: 3
 Encoding: UTF-8
-NeedsCompilation: no
-RoxygenNote: 7.3.2
+NeedsCompilation: yes
+RoxygenNote: 7.3.3
 Collate: 'aaa.R' 'LearnerClassifCVGlmnet.R' 'LearnerClassifGlmnet.R'
         'LearnerClassifKKNN.R' 'LearnerClassifLDA.R'
         'LearnerClassifLogReg.R' 'LearnerClassifMultinom.R'
@@ -46,7 +46,7 @@ Collate: 'aaa.R' 'LearnerClassifCVGlmnet.R' 'LearnerClassifGlmnet.R'
         'LearnerRegrNnet.R' 'LearnerRegrRanger.R' 'LearnerRegrSVM.R'
         'LearnerRegrXgboost.R' 'bibentries.R' 'helpers.R'
         'helpers_glmnet.R' 'helpers_ranger.R' 'zzz.R'
-Packaged: 2025-05-21 07:14:41 UTC; marc
+Packaged: 2025-10-02 09:24:27 UTC; marc
 Author: Michel Lang [aut] (ORCID: <https://orcid.org/0000-0001-9754-0393>),
   Quay Au [aut] (ORCID: <https://orcid.org/0000-0002-5252-8902>),
   Stefan Coors [aut] (ORCID: <https://orcid.org/0000-0002-7465-2146>),
@@ -55,4 +55,4 @@ Author: Michel Lang [aut] (ORCID: <https://orcid.org/0000-0001-9754-0393>),
   John Zobolas [aut] (ORCID: <https://orcid.org/0000-0002-3609-8674>)
 Maintainer: Marc Becker <marcbecker@posteo.de>
 Repository: CRAN
-Date/Publication: 2025-05-23 08:42:03 UTC
+Date/Publication: 2025-10-02 16:40:02 UTC

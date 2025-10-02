@@ -1,3 +1,10 @@
+# mlr3learners 0.13.0
+
+* feat: Add new uncertainty estimation methods `ensemble_standard_deviation` and `law_of_total_variance` to `regr.ranger` learner.
+* fix: Default `nrounds` for xgboost learners.
+* feat: Store ranger oob error without storing models.
+* fix: Only allow simple measures as internal measures for xgboost learners.
+
 # mlr3learners 0.12.0
 
 * feat: Add `classif.kknn` and `regr.kknn` learners.

@@ -112,10 +112,15 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
     #'
     #' @return `numeric(1)`.
     oob_error = function() {
-      if (is.null(self$model)) {
-        stopf("No model stored")
+      if (!is.null(self$state$oob_error)) {
+        return(self$state$oob_error)
       }
-      self$model$prediction.error
+
+      if (!is.null(self$model)) {
+        return(self$model$prediction.error)
+      }
+
+      stopf("No model stored")
     },
 
     #' @description
@@ -123,7 +128,7 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
     #'
     #' @return `character()`.
     selected_features = function() {
-      ranger_selected_features(self)
+      ranger_selected_features(self$model, self$state$feature_names)
     }
   ),
 
@@ -162,6 +167,10 @@ LearnerClassifRanger = R6Class("LearnerClassifRanger",
       model = self$model
       model$num.trees = self$param_set$values$num.trees
       model
+    },
+
+    .extract_oob_error = function() {
+      self$model$prediction.error
     }
   )
 )
