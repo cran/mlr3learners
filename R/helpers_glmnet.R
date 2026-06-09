@@ -10,7 +10,8 @@ glmnet_get_lambda = function(self, pv) {
     self$model[[s]]
   } else if (is.numeric(s)) {
     s
-  } else { # null / missing
+  } else {
+    # null / missing
     if (inherits(self$model, "cv.glmnet")) {
       self$model[["lambda.1se"]]
     } else if (length(self$model$lambda) == 1L) {
@@ -42,11 +43,10 @@ glmnet_selected_features = function(self, lambda = NULL) {
   assert_number(lambda, null.ok = TRUE, lower = 0)
   lambda = lambda %??% glmnet_get_lambda(self)
   nonzero = predict(self$model, type = "nonzero", s = lambda)
-  if (is.data.frame(nonzero)) {
-    nonzero = nonzero[[1L]]
+  nonzero = if (is.data.frame(nonzero)) {
+    nonzero[[1L]]
   } else {
-    nonzero = unlist(map(nonzero, 1L), use.names = FALSE)
-    nonzero = if (length(nonzero)) sort(unique(nonzero)) else integer()
+    sort(unique(unlist(nonzero, use.names = FALSE)))
   }
 
   glmnet_feature_names(self$model)[nonzero]
@@ -66,16 +66,26 @@ glmnet_invoke = function(data, target, pv, cv = FALSE) {
     pv = pv[!is_ctrl_pars]
   }
 
-  invoke(
-    if (cv) glmnet::cv.glmnet else glmnet::glmnet,
-    x = data, y = target, .args = pv
-  )
+  # `seed` is an mlr3-only parameter that seeds the fit (e.g. cv.glmnet's random folds)
+  # via invoke's `.seed`; it must not be passed on to glmnet itself.
+  # We must call glmnet::glmnet / glmnet::cv.glmnet by their literal names so that the
+  # call captured by glmnet works when relax.glmnet re-evaluates it.
+  seed = pv[["seed"]] %??% NA_integer_
+  pv = pv[names(pv) != "seed"]
+
+  if (cv) {
+    invoke(glmnet::cv.glmnet, x = data, y = target, .args = pv, .seed = seed)
+  } else {
+    invoke(glmnet::glmnet, x = data, y = target, .args = pv, .seed = seed)
+  }
 }
 
 glmnet_set_offset = function(task, phase = "train", pv) {
   assert_choice(phase, c("train", "predict"))
 
-  if ("offset" %nin% task$properties) return(pv)
+  if ("offset" %nin% task$properties) {
+    return(pv)
+  }
 
   use_pred_offset = isTRUE(pv$use_pred_offset)
   is_train = phase == "train"
@@ -96,8 +106,11 @@ glmnet_set_offset = function(task, phase = "train", pv) {
         if (is_train || use_pred_offset) task$offset$offset else rep(0, task$nrow)
     } else {
       pv[[if (is_train) "offset" else "newoffset"]] =
-        if (is_train || use_pred_offset) as_numeric_matrix(task$offset)[, offset_cols]
-      else matrix(0, nrow = task$nrow, ncol = length(task$class_names))
+        if (is_train || use_pred_offset) {
+          as_numeric_matrix(task$offset)[, offset_cols]
+        } else {
+          matrix(0, nrow = task$nrow, ncol = length(task$class_names))
+        }
     }
   }
 

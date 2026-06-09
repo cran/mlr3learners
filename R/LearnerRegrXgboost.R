@@ -9,7 +9,8 @@
 #' To compute on GPUs, you first need to compile \CRANpkg{xgboost} yourself and link
 #' against CUDA. See \url{https://xgboost.readthedocs.io/en/stable/build.html#building-with-gpu-support}.
 #'
-#' Note that using the `evals` parameter directly will lead to problems when wrapping this [mlr3::Learner] in a `mlr3pipelines` `GraphLearner`
+#' Note that using the `evals` parameter directly will lead to problems
+#' when wrapping this [mlr3::Learner] in a `mlr3pipelines` `GraphLearner`
 #' as the preprocessing steps will not be applied to the data in `evals`.
 #' See the section *Early Stopping and Validation* on how to do this.
 #'
@@ -20,7 +21,12 @@
 #' @section Offset:
 #' If a `Task` has a column with the role `offset`, it will automatically be used during training.
 #' The offset is incorporated through the [xgboost::xgb.DMatrix] interface, using the `base_margin` field.
-#' No offset is applied during prediction for this learner.
+#' During prediction, the offset column from the test set is used only if `use_pred_offset = TRUE` (default) and
+#' the `Task` has a column with the role `offset`.
+#' The test set offsets are passed via the `base_margin` argument in [xgboost::predict.xgb.Booster()].
+#' Otherwise, if the user sets `use_pred_offset = FALSE` (or the `Task` doesn't have a column with the `offset` role),
+#' the (possibly estimated) global intercept from the train set is applied.
+#' See \url{https://xgboost.readthedocs.io/en/stable/tutorials/intercept.html}.
 #'
 #' @templateVar id regr.xgboost
 #' @template learner
@@ -30,59 +36,44 @@
 #'
 #' @export
 #' @template seealso_learner
-#' @template example_dontrun
-#' @examples
-#'
-#' \dontrun{
-#' # Train learner with early stopping on spam data set
-#' task = tsk("mtcars")
-#'
-#' # use 30 percent for validation
-#' # Set early stopping parameter
-#' learner = lrn("regr.xgboost",
-#'   nrounds = 100,
-#'   early_stopping_rounds = 10,
-#'   validate = 0.3
-#' )
-#'
-#' # Train learner with early stopping
-#' learner$train(task)
-#'
-#' # Inspect optimal nrounds and validation performance
-#' learner$internal_tuned_values
-#' learner$internal_valid_scores
-#' }
-LearnerRegrXgboost = R6Class("LearnerRegrXgboost",
+#' @template example_xgboost
+LearnerRegrXgboost = R6Class(
+  "LearnerRegrXgboost",
   inherit = LearnerRegr,
   public = list(
-
     #' @description
     #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
-
-      p_nrounds = p_int(1L,
+      p_nrounds = p_int(
+        1L,
         tags = c("train", "hotstart", "internal_tuning"),
         aggr = crate(function(x) as.integer(ceiling(mean(unlist(x)))), .parent = topenv()),
-        in_tune_fn = crate(function(domain, param_vals) {
-          if (is.null(param_vals$early_stopping_rounds)) {
-            stop("Parameter 'early_stopping_rounds' must be set to use internal tuning.")
-          }
-          if (is.null(param_vals$eval_metric) && is.null(param_vals$custom_metric)) {
-            stop("Parameter 'eval_metric' or 'custom_metric' must be set explicitly when using internal tuning.")
-          }
-          assert_integerish(domain$upper, len = 1L, any.missing = FALSE) }, .parent = topenv()),
+        in_tune_fn = crate(
+          function(domain, param_vals) {
+            if (is.null(param_vals$early_stopping_rounds)) {
+              stop("Parameter 'early_stopping_rounds' must be set to use internal tuning.")
+            }
+            if (is.null(param_vals$eval_metric) && is.null(param_vals$custom_metric)) {
+              stop("Parameter 'eval_metric' or 'custom_metric' must be set explicitly when using internal tuning.")
+            }
+            assert_integerish(domain$upper, len = 1L, any.missing = FALSE)
+          },
+          .parent = topenv()
+        ),
         disable_in_tune = list(early_stopping_rounds = NULL),
         init = 1000L
       )
+      # fmt: skip
+      # nolint start
       ps = ps(
         alpha                       = p_dbl(0, default = 0, tags = "train"),
         approxcontrib               = p_lgl(default = FALSE, tags = "predict"),
-        base_score                  = p_dbl(default = 0.5, tags = "train"),
+        base_score                  = p_dbl(tags = "train"),
         booster                     = p_fct(c("gbtree", "gblinear", "dart"), default = "gbtree", tags = "train"),
         callbacks                   = p_uty(default = list(), tags = "train"),
-        colsample_bylevel           = p_dbl(0, 1, default = 1, tags = "train"),
-        colsample_bynode            = p_dbl(0, 1, default = 1, tags = "train"),
-        colsample_bytree            = p_dbl(0, 1, default = 1, tags = "train"),
+        colsample_bylevel           = p_dbl(0, 1, default = 1, tags = "train", depends = quote(booster == "gbtree")),
+        colsample_bynode            = p_dbl(0, 1, default = 1, tags = "train", depends = quote(booster == "gbtree")),
+        colsample_bytree            = p_dbl(0, 1, default = 1, tags = "train"), # FIXME: depends = quote(booster == "gbtree")
         device                      = p_uty(default = "cpu", tags = "train"),
         disable_default_eval_metric = p_lgl(default = FALSE, tags = "train"),
         early_stopping_rounds       = p_int(1L, default = NULL, special_vals = list(NULL), tags = "train"),
@@ -90,43 +81,42 @@ LearnerRegrXgboost = R6Class("LearnerRegrXgboost",
         evals                       = p_uty(default = NULL, tags = "train"),
         eval_metric                 = p_uty(tags = "train"),
         custom_metric               = p_uty(tags = "train", custom_check = crate({function(x) check_true(any(is.function(x), test_multi_class(x, c("MeasureRegrSimple"))))})),
-        extmem_single_page          = p_lgl(default = FALSE, tags = "train"),
         feature_selector            = p_fct(c("cyclic", "shuffle", "random", "greedy", "thrifty"), default = "cyclic", tags = "train", depends = quote(booster == "gblinear")),
         gamma                       = p_dbl(0, default = 0, tags = "train"),
-        grow_policy                 = p_fct(c("depthwise", "lossguide"), default = "depthwise", tags = "train", depends = quote(tree_method == "hist")),
+        grow_policy                 = p_fct(c("depthwise", "lossguide"), default = "depthwise", tags = "train", depends = quote(booster == "gbtree" && tree_method %in% c("hist", "approx"))),
         huber_slope                 = p_dbl(default = 1, tags = "train"),
-        interaction_constraints     = p_uty(tags = "train"),
+        interaction_constraints     = p_uty(tags = "train", depends = quote(booster == "gbtree")),
         iterationrange              = p_uty(tags = "predict"),
         lambda                      = p_dbl(0, default = 1, tags = "train"),
-        max_bin                     = p_int(2L, default = 256L, tags = "train", depends = quote(tree_method == "hist")),
-        max_cached_hist_node        = p_int(default = 65536L, tags = "train", depends = quote(tree_method == "hist")),
-        max_cat_to_onehot           = p_int(tags = "train"),
-        max_cat_threshold           = p_dbl(tags = "train"),
-        max_delta_step              = p_dbl(0, default = 0, tags = "train"),
-        max_depth                   = p_int(0L, default = 6L, tags = "train"),
-        max_leaves                  = p_int(0L, default = 0L, tags = "train", depends = quote(grow_policy == "lossguide")),
+        max_bin                     = p_int(2L, default = 256L, tags = "train", depends = quote(tree_method %in% c("hist", "approx"))),
+        max_cached_hist_node        = p_int(default = 65536L, tags = "train", depends = quote(tree_method %in% c("hist", "approx"))),
+        max_cat_to_onehot           = p_int(tags = "train", depends = quote(tree_method %in% c("hist", "approx"))),
+        max_cat_threshold           = p_dbl(tags = "train", depends = quote(tree_method %in% c("hist", "approx"))),
+        max_delta_step              = p_dbl(0, default = 0, tags = "train", depends = quote(booster == "gbtree")),
+        max_depth                   = p_int(0L, default = 6L, tags = "train"), # FIXME: depends = quote(booster == "gbtree")
+        max_leaves                  = p_int(0L, default = 0L, tags = "train", depends = quote(booster == "gbtree")),
         maximize                    = p_lgl(default = NULL, special_vals = list(NULL), tags = "train"),
-        min_child_weight            = p_dbl(0, default = 1, tags = "train"),
+        min_child_weight            = p_dbl(0, default = 1, tags = "train"), # FIXME: depends = quote(booster == "gbtree")
         missing                     = p_dbl(default = NA, tags = "predict", special_vals = list(NA, NA_real_, NULL)),
-        monotone_constraints        = p_uty(default = 0, tags = "train", custom_check = crate(function(x) { checkmate::check_integerish(x, lower = -1, upper = 1, any.missing = FALSE) })), # nolint
+        monotone_constraints        = p_uty(default = 0, tags = "train", custom_check = crate(function(x) { checkmate::check_integerish(x, lower = -1, upper = 1, any.missing = FALSE) }), depends = quote(booster == "gbtree")),
         nrounds                     = p_nrounds,
         normalize_type              = p_fct(c("tree", "forest"), default = "tree", tags = "train", depends = quote(booster == "dart")),
         nthread                     = p_int(1L, init = 1L, tags = c("train", "threads")),
-        num_parallel_tree           = p_int(1L, default = 1L, tags = "train"),
+        num_parallel_tree           = p_int(1L, default = 1L, tags = "train", depends = quote(booster == "gbtree")),
         objective                   = p_uty(default = "reg:squarederror", tags = c("train", "predict")),
         one_drop                    = p_lgl(default = FALSE, tags = "train", depends = quote(booster == "dart")),
         print_every_n               = p_int(1L, default = 1L, tags = "train", depends = quote(verbose == 1L)),
         rate_drop                   = p_dbl(0, 1, default = 0, tags = "train", depends = quote(booster == "dart")),
-        refresh_leaf                = p_lgl(default = TRUE, tags = "train"),
+        refresh_leaf                = p_lgl(default = TRUE, tags = "train", depends = quote(booster == "gbtree")),
         seed                        = p_int(tags = "train"),
         seed_per_iteration          = p_lgl(default = FALSE, tags = "train"),
         sampling_method             = p_fct(c("uniform", "gradient_based"), default = "uniform", tags = "train", depends = quote(booster == "gbtree")),
         sample_type                 = p_fct(c("uniform", "weighted"), default = "uniform", tags = "train", depends = quote(booster == "dart")),
         save_name                   = p_uty(default = NULL, tags = "train"),
         save_period                 = p_int(0, default = NULL, special_vals = list(NULL), tags = "train"),
-        scale_pos_weight            = p_dbl(default = 1, tags = "train"),
+        scale_pos_weight            = p_dbl(default = 1, tags = "train", depends = quote(booster == "gbtree")),
         skip_drop                   = p_dbl(0, 1, default = 0, tags = "train", depends = quote(booster == "dart")),
-        subsample                   = p_dbl(0, 1, default = 1, tags = "train"),
+        subsample                   = p_dbl(0, 1, default = 1, tags = "train"), # FIXME: depends = quote(booster == "gbtree")
         top_k                       = p_int(0, default = 0, tags = "train", depends = quote(feature_selector %in% c("greedy", "thrifty") && booster == "gblinear")),
         training                    = p_lgl(default = FALSE, tags = "predict"),
         tree_method                 = p_fct(c("auto", "exact", "approx", "hist", "gpu_hist"), default = "auto", tags = "train", depends = quote(booster %in% c("gbtree", "dart"))),
@@ -136,14 +126,24 @@ LearnerRegrXgboost = R6Class("LearnerRegrXgboost",
         validate_features           = p_lgl(default = TRUE, tags = "predict"),
         verbose                     = p_int(0L, 2L, init = 0L, tags = "train"),
         verbosity                   = p_int(0L, 2L, init = 0L, tags = "train"),
-        xgb_model                   = p_uty(default = NULL, tags = "train")
+        xgb_model                   = p_uty(default = NULL, tags = "train"),
+        use_pred_offset             = p_lgl(init = TRUE, tags = "predict")
       )
+      # nolint end
 
       super$initialize(
         id = "regr.xgboost",
         param_set = ps,
         feature_types = c("logical", "integer", "numeric"),
-        properties = c("weights", "missings", "importance", "hotstart_forward", "internal_tuning", "validation", "offset"),
+        properties = c(
+          "weights",
+          "missings",
+          "importance",
+          "hotstart_forward",
+          "internal_tuning",
+          "validation",
+          "offset"
+        ),
         packages = c("mlr3learners", "xgboost"),
         label = "Extreme Gradient Boosting",
         man = "mlr3learners::mlr_learners_regr.xgboost"
@@ -209,7 +209,6 @@ LearnerRegrXgboost = R6Class("LearnerRegrXgboost",
   private = list(
     .validate = NULL,
     .train = function(task) {
-
       pv = self$param_set$get_values(tags = "train")
 
       if (is.null(pv$objective)) {
@@ -261,11 +260,16 @@ LearnerRegrXgboost = R6Class("LearnerRegrXgboost",
           stop("Only 'reg:squarederror' and 'reg:absoluteerror' objectives are supported.")
         }
 
-        pv$custom_metric = mlr3misc::crate({function(pred, dtrain) {
-          truth = xgboost::getinfo(dtrain, "label")
-          scores = measure$fun(truth, pred)
-          list(metric = measure$id, value = scores)
-        }}, measure)
+        pv$custom_metric = crate(
+          {
+            function(pred, dtrain) {
+              truth = xgboost::getinfo(dtrain, "label")
+              scores = measure$fun(truth, pred)
+              list(metric = measure$id, value = scores)
+            }
+          },
+          measure
+        )
 
         pv$maximize = !measure$minimize
       }
@@ -295,10 +299,17 @@ LearnerRegrXgboost = R6Class("LearnerRegrXgboost",
       pv = self$param_set$get_values(tags = "predict")
       model = self$model
       newdata = as_numeric_matrix(ordered_features(task, self))
+      if (isTRUE(pv$use_pred_offset) && "offset" %in% task$properties) {
+        pv$base_margin = task$offset$offset
+      }
 
       response = invoke(predict, model, newdata = newdata, .args = pv)
 
-      list(response = response)
+      result = list(response = response)
+      if (self$predict_raw) {
+        result$raw = response
+      }
+      result
     },
 
     .hotstart = function(task) {
@@ -367,7 +378,8 @@ LearnerRegrXgboost = R6Class("LearnerRegrXgboost",
 )
 
 #' @export
-default_values.LearnerRegrXgboost = function(x, search_space, task, ...) { # nolint
+#nolint next
+default_values.LearnerRegrXgboost = function(x, search_space, task, ...) {
   special_defaults = list(
     nrounds = 1000L
   )

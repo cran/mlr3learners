@@ -69,11 +69,7 @@ test_that("hotstart", {
 test_that("validation and inner tuning", {
   task = tsk("spam")
 
-  learner = lrn("classif.xgboost",
-    nrounds = 10,
-    early_stopping_rounds = 1,
-    validate = 0.2
-  )
+  learner = lrn("classif.xgboost", nrounds = 10, early_stopping_rounds = 1, validate = 0.2)
 
   learner$train(task)
   expect_named(attributes(learner$model)$evaluation_log, c("iter", "test_logloss"))
@@ -97,24 +93,19 @@ test_that("validation and inner tuning", {
   expect_list(learner$internal_valid_scores, types = "numeric")
   expect_equal(names(learner$internal_valid_scores), "logloss")
 
-  learner = lrn("classif.xgboost",
-    nrounds = to_tune(upper = 1000, internal = TRUE),
-    validate = 0.2
-  )
+  learner = lrn("classif.xgboost", nrounds = to_tune(upper = 1000, internal = TRUE), validate = 0.2)
   s = learner$param_set$search_space()
   expect_error(learner$param_set$convert_internal_search_space(s), "Parameter")
   learner$param_set$set_values(early_stopping_rounds = 10)
   learner$param_set$disable_internal_tuning("nrounds")
   expect_equal(learner$param_set$values$early_stopping_rounds, NULL)
 
-  learner = lrn("classif.xgboost",
-    nrounds = 100,
-    early_stopping_rounds = 5,
-    validate = 0.3
-  )
+  learner = lrn("classif.xgboost", nrounds = 100, early_stopping_rounds = 5, validate = 0.3)
   learner$train(task)
-  expect_equal(learner$internal_valid_scores$logloss,
-    attributes(learner$model)$evaluation_log$test_logloss[learner$internal_tuned_values$nrounds])
+  expect_equal(
+    learner$internal_valid_scores$logloss,
+    attributes(learner$model)$evaluation_log$test_logloss[learner$internal_tuned_values$nrounds]
+  )
 
   learner = lrn("classif.xgboost")
   learner$train(task)
@@ -137,11 +128,11 @@ test_that("validation and inner tuning", {
 })
 
 test_that("custom inner validation measure", {
-
   # internal measure
   task = tsk("sonar")
 
-  learner = lrn("classif.xgboost",
+  learner = lrn(
+    "classif.xgboost",
     nrounds = 10,
     objective = "binary:logistic",
     validate = 0.2,
@@ -158,7 +149,8 @@ test_that("custom inner validation measure", {
   # function
   task = tsk("sonar")
 
-  learner = lrn("classif.xgboost",
+  learner = lrn(
+    "classif.xgboost",
     nrounds = 10,
     objective = "binary:logistic",
     validate = 0.2,
@@ -169,7 +161,7 @@ test_that("custom inner validation measure", {
   learner$param_set$set_values(custom_metric = function(preds, dtrain) {
     labels = xgboost::getinfo(dtrain, "label")
     err = as.numeric(sum(labels != (preds > 0))) / length(labels)
-    return(list(metric = "error_fun", value = err))
+    list(metric = "error_fun", value = err)
   })
   learner$train(task)
 
@@ -177,19 +169,14 @@ test_that("custom inner validation measure", {
   expect_list(learner$internal_valid_scores, types = "numeric")
   expect_equal(names(learner$internal_valid_scores), "error_fun")
 
-
   # binary task and mlr3 measure binary response
   task = tsk("sonar")
 
-  learner = lrn("classif.xgboost",
-    nrounds = 10,
-    validate = 0.2,
-    custom_metric = msr("classif.ce")
-  )
+  learner = lrn("classif.xgboost", nrounds = 10, validate = 0.2, custom_metric = msr("classif.ce"))
 
   learner$train(task)
 
-  expect_named(attributes(learner$model)$evaluation_log, c("iter",  "test_classif.ce"))
+  expect_named(attributes(learner$model)$evaluation_log, c("iter", "test_classif.ce"))
   expect_numeric(attributes(learner$model)$evaluation_log$test_classif.ce, len = 10)
   expect_list(learner$internal_valid_scores, types = "numeric")
   expect_equal(names(learner$internal_valid_scores), "classif.ce")
@@ -197,7 +184,8 @@ test_that("custom inner validation measure", {
   # binary task and mlr3 measure binary prob
   task = tsk("sonar")
 
-  learner = lrn("classif.xgboost",
+  learner = lrn(
+    "classif.xgboost",
     nrounds = 10,
     validate = 0.2,
     early_stopping_rounds = 10,
@@ -207,7 +195,7 @@ test_that("custom inner validation measure", {
 
   learner$train(task)
 
-  expect_named(attributes(learner$model)$evaluation_log, c("iter",  "test_classif.logloss"))
+  expect_named(attributes(learner$model)$evaluation_log, c("iter", "test_classif.logloss"))
   expect_numeric(attributes(learner$model)$evaluation_log$test_classif.logloss, len = 10)
   expect_list(learner$internal_valid_scores, types = "numeric")
   expect_equal(names(learner$internal_valid_scores), "classif.logloss")
@@ -215,7 +203,8 @@ test_that("custom inner validation measure", {
   # binary task and mlr3 measure multiclass prob
   task = tsk("sonar")
 
-  learner = lrn("classif.xgboost",
+  learner = lrn(
+    "classif.xgboost",
     nrounds = 10,
     validate = 0.2,
     early_stopping_rounds = 10,
@@ -225,7 +214,7 @@ test_that("custom inner validation measure", {
 
   learner$train(task)
 
-  expect_named(attributes(learner$model)$evaluation_log, c("iter",  "test_classif.auc"))
+  expect_named(attributes(learner$model)$evaluation_log, c("iter", "test_classif.auc"))
   expect_numeric(attributes(learner$model)$evaluation_log$test_classif.auc, len = 10)
   expect_list(learner$internal_valid_scores, types = "numeric")
   expect_equal(names(learner$internal_valid_scores), "classif.auc")
@@ -233,7 +222,8 @@ test_that("custom inner validation measure", {
   # multiclass task and mlr3 measure multiclass response
   task = tsk("iris")
 
-  learner = lrn("classif.xgboost",
+  learner = lrn(
+    "classif.xgboost",
     nrounds = 10,
     validate = 0.2,
     early_stopping_rounds = 10,
@@ -243,7 +233,7 @@ test_that("custom inner validation measure", {
 
   learner$train(task)
 
-  expect_named(attributes(learner$model)$evaluation_log, c("iter",  "test_classif.ce"))
+  expect_named(attributes(learner$model)$evaluation_log, c("iter", "test_classif.ce"))
   expect_numeric(attributes(learner$model)$evaluation_log$test_classif.ce, len = 10)
   expect_list(learner$internal_valid_scores, types = "numeric")
   expect_equal(names(learner$internal_valid_scores), "classif.ce")
@@ -251,7 +241,8 @@ test_that("custom inner validation measure", {
   # multiclass task and mlr3 measure multiclass prob
   task = tsk("iris")
 
-  learner = lrn("classif.xgboost",
+  learner = lrn(
+    "classif.xgboost",
     nrounds = 10,
     validate = 0.2,
     early_stopping_rounds = 10,
@@ -261,7 +252,7 @@ test_that("custom inner validation measure", {
 
   learner$train(task)
 
-  expect_named(attributes(learner$model)$evaluation_log, c("iter",  "test_classif.logloss"))
+  expect_named(attributes(learner$model)$evaluation_log, c("iter", "test_classif.logloss"))
   expect_numeric(attributes(learner$model)$evaluation_log$test_classif.logloss, len = 10)
   expect_list(learner$internal_valid_scores, types = "numeric")
   expect_equal(names(learner$internal_valid_scores), "classif.logloss")
@@ -272,7 +263,8 @@ test_that("mlr3measures are equal to internal measures", {
   set.seed(1)
   task = tsk("sonar")
 
-  learner = lrn("classif.xgboost",
+  learner = lrn(
+    "classif.xgboost",
     nrounds = 10,
     objective = "binary:logistic",
     validate = 0.2,
@@ -295,7 +287,8 @@ test_that("mlr3measures are equal to internal measures", {
   set.seed(1)
   task = tsk("sonar")
 
-  learner = lrn("classif.xgboost",
+  learner = lrn(
+    "classif.xgboost",
     nrounds = 10,
     objective = "binary:logistic",
     validate = 0.2,
@@ -318,7 +311,8 @@ test_that("mlr3measures are equal to internal measures", {
   set.seed(1)
   task = tsk("zoo")
 
-  learner = lrn("classif.xgboost",
+  learner = lrn(
+    "classif.xgboost",
     nrounds = 10,
     objective = "multi:softmax",
     validate = 0.5,
@@ -341,7 +335,8 @@ test_that("mlr3measures are equal to internal measures", {
   set.seed(1)
   task = tsk("zoo")
 
-  learner = lrn("classif.xgboost",
+  learner = lrn(
+    "classif.xgboost",
     nrounds = 10,
     objective = "multi:softprob",
     validate = 0.5,
@@ -368,19 +363,65 @@ test_that("base_margin (offset)", {
   # same task but with a numeric column acting as offset
   task_offset = task$clone()
   task_offset$set_col_roles(cols = "V42", roles = "offset")
+  # same task but with a zero offset (base_margin)
+  task_offset2 = task$clone()
+  task_offset2$cbind(data.frame(zeros = rep(0, task$nrow)))
+  task_offset2$set_col_roles(cols = "zeros", roles = "offset")
 
   # add predefined internal validation task
   part = partition(task, c(0.6, 0.2)) # 60% train, 20% test, 20% validate
   task$internal_valid_task = part$validation
   task_offset$internal_valid_task = part$validation
+  task_offset2$internal_valid_task = part$validation
 
-  l = lrn("classif.xgboost", nrounds = 5, predict_type = "prob")
-  l$validate = "predefined"
-  p1 = l$train(task, part$train)$predict(task, part$test) # no offset
-  p2 = l$train(task_offset, part$train)$predict(task_offset, part$test) # non-zero offset
-  expect_false("V42" %in% l$model$feature_names) # "V42" column is not a feature
+  l1 = lrn("classif.xgboost", objective = "binary:logistic", nrounds = 3, predict_type = "prob")
+  l2 = l1$clone(deep = TRUE)
+  l3 = l1$clone(deep = TRUE)
+  l1$param_set$set_values(base_score = 0.5)
+  l1$validate = "predefined"
+  l2$validate = "predefined"
+  l3$validate = "predefined"
 
-  expect_false(all(p1$prob[, 1L] == p2$prob[, 1L])) # non-zero offset => different predictions
+  # train
+  l1$train(task, part$train) # fixed global intercept (base_score = 0.5 <=> base_margin = 0)
+  l2$train(task_offset, part$train) # with "V42" values as offset
+  l3$train(task_offset2, part$train) # with base_margin = 0 as offset
+  # if you peek inside the l2 and l3 xgboost models, you will see a
+  # base_score value has also been estimated (i.e. to be used for prediction)
+  # see https://github.com/dmlc/xgboost/issues/11872#issuecomment-3666848941
+
+  expect_true("V42" %in% xgboost::getinfo(l1$model, "feature_name"))
+  expect_true("V42" %nin% xgboost::getinfo(l2$model, "feature_name"))
+  expect_true("zeros" %nin% xgboost::getinfo(l3$model, "feature_name"))
+  # different models: base_score = 0.5 vs "V42" base_margin
+  expect_false(length(xgboost::xgb.dump(l1$model)) == length(xgboost::xgb.dump(l2$model)))
+  # same models:  base_score = 0.5 <=> base_margin = 0 for logit
+  # logit(p) = base_margin + f(x)
+  # https://xgboost.readthedocs.io/en/stable/tutorials/intercept.html
+  expect_equal(xgboost::xgb.dump(l1$model), xgboost::xgb.dump(l3$model))
+
+  # predict (default: use_pred_offset = TRUE)
+  p1 = l1$predict(task, part$test) # task has no offset, base_score = 0.5 is used
+  p2 = l2$predict(task_offset, part$test) # "V42" base_margin is used
+  p3 = l3$predict(task_offset2, part$test) # base_margin = 0 is used
+
+  # different models + offsets => different predictions
+  expect_false(all(p1$prob[, 1L] == p2$prob[, 1L]))
+  expect_false(all(p2$prob[, 1L] == p3$prob[, 1L]))
+  # same models + same offsets => same predictions
+  expect_equal(p1$prob, p3$prob)
+
+  # predict (use_pred_offset = FALSE)
+  l1$param_set$set_values(use_pred_offset = FALSE)
+  l2$param_set$set_values(use_pred_offset = FALSE)
+  l3$param_set$set_values(use_pred_offset = FALSE)
+
+  p11 = l1$predict(task, part$test)
+  p22 = l2$predict(task_offset, part$test)
+  p33 = l3$predict(task_offset2, part$test)
+  expect_equal(p1$prob, p11$prob) # task has no offset, again base_score = 0.5 is used
+  expect_false(all(p2$prob[, 1L] == p22$prob[, 1L])) # base_score = 0.512 is used
+  expect_false(all(p3$prob[, 1L] == p33$prob[, 1L])) # base_score = 0.512 is used
 
   # multiclass task
   task = tsk("iris")
@@ -396,9 +437,9 @@ test_that("base_margin (offset)", {
   task_offset2$set_col_roles(cols = c("offset_setosa", "offset_versicolor"), roles = "offset")
   part = partition(task)
 
-  l = lrn("classif.xgboost", nrounds = 5, predict_type = "prob")
+  l = lrn("classif.xgboost", nrounds = 3, predict_type = "prob")
   # xgboost doesn't work with less offset columns than the class labels
-  expect_error(l$train(task_offset2), "only 2 offset columns are provided")
+  expect_error(l$train(task_offset2), "2 offset columns are provided")
   p1 = l$train(task, part$train)$predict(task, part$test) # no offset
   p2 = l$train(task_offset, part$train)$predict(task_offset, part$test) # with offset
 

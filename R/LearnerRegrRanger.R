@@ -7,14 +7,19 @@
 #' Calls `ranger()` from package \CRANpkg{ranger}.
 #'
 #' @details
-#' Additionally to the uncertainty estimation methods provided by the ranger package, the learner provides a ensemble standard deviation and law of total variance uncertainty estimation.
-#' Both methods compute the empirical mean and variance of the training data points that fall into the predicted leaf nodes.
+#' In addition to the uncertainty estimation methods provided by the ranger package,
+#' the learner provides an ensemble standard deviation and law of total variance uncertainty estimation.
+#' Both methods compute the empirical mean and variance of the training data points
+#' that fall into the predicted leaf nodes.
 #' The ensemble standard deviation method calculates the standard deviation of the mean of the leaf nodes.
-#' The law of total variance method calculates the mean of the variance of the leaf nodes plus the variance of the means of the leaf nodes.
+#' The law of total variance method calculates the mean of the variance of the leaf nodes
+#' plus the variance of the means of the leaf nodes.
 #' Formulas for the ensemble standard deviation and law of total variance method are given in Hutter et al. (2015).
 #'
-#' For these 2 methods, the parameter `sigma2.threshold` can be used to set a threshold for the variance of the leaf nodes,
-#' this is a minimal value for the variance of the leaf nodes, if the variance is below this threshold, it is set to this value (as described in the paper).
+#' For these 2 methods, the parameter `sigma2.threshold` can be used to set a threshold
+#' for the variance of the leaf nodes,
+#' this is a minimal value for the variance of the leaf nodes, if the variance is below this threshold,
+#' it is set to this value (as described in the paper).
 #' Default is 1e-2.
 #'
 #' @inheritSection mlr_learners_classif.ranger Custom mlr3 parameters
@@ -28,15 +33,17 @@
 #'
 #' @export
 #' @template seealso_learner
-#' @template example
-LearnerRegrRanger = R6Class("LearnerRegrRanger",
+#' @template example_ranger
+LearnerRegrRanger = R6Class(
+  "LearnerRegrRanger",
   inherit = LearnerRegr,
 
   public = list(
-
     #' @description
     #' Creates a new instance of this [R6][R6::R6Class] class.
     initialize = function() {
+      # fmt: skip
+      # nolint start
       ps = ps(
         always.split.variables       = p_uty(tags = "train"),
         holdout                      = p_lgl(default = FALSE, tags = "train"),
@@ -61,6 +68,7 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
         sample.fraction              = p_dbl(0L, 1L, tags = "train"),
         save.memory                  = p_lgl(default = FALSE, tags = "train"),
         scale.permutation.importance = p_lgl(default = FALSE, tags = "train", depends = quote(importance == "permutation")),
+        local.importance             = p_lgl(default = FALSE, tags = "train", depends = quote(importance == "permutation")),
         se.method                    = p_fct(c("jack", "infjack", "ensemble_standard_deviation", "law_of_total_variance"), default = "infjack", tags = "predict"),
         sigma2.threshold             = p_dbl(default = 1e-2, tags = "train"),
         seed                         = p_int(default = NULL, special_vals = list(NULL), tags = c("train", "predict")),
@@ -69,6 +77,7 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
         verbose                      = p_lgl(default = TRUE, tags = c("train", "predict")),
         write.forest                 = p_lgl(default = TRUE, tags = "train")
       )
+      # nolint end
 
       ps$set_values(num.threads = 1L, sigma2.threshold = 1e-2)
 
@@ -126,6 +135,14 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
     }
   ),
 
+  active = list(
+    #' @field native_model ([ranger::ranger])\cr
+    #' The fitted model.
+    native_model = function() {
+      self$model$model
+    }
+  ),
+
   private = list(
     .train = function(task) {
       pv = self$param_set$get_values(tags = "train")
@@ -136,22 +153,27 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
       pv$case.weights = get_weights(task, private)
 
       if (self$predict_type == "se") {
-        pv$keep.inbag = TRUE # nolint
+        #nolint next
+        pv$keep.inbag = TRUE
       }
 
       if (self$predict_type == "quantiles") {
-        pv$quantreg = TRUE # nolint
+        #nolint next
+        pv$quantreg = TRUE
       }
       data = task$data()
-      model = invoke(ranger::ranger,
-        dependent.variable.name = task$target_names,
-        data = data,
-        .args = pv
-      )
+      model = invoke(ranger::ranger, dependent.variable.name = task$target_names, data = data, .args = pv)
 
       if (isTRUE(self$param_set$values$se.method %in% c("ensemble_standard_deviation", "law_of_total_variance"))) {
         # num.threads is the only thing from the param set we want to pass here and not set manually
-        prediction_nodes = mlr3misc::invoke(predict, model, data = data, type = "terminalNodes", predict.all = TRUE, num.threads = pv$num.threads)
+        prediction_nodes = invoke(
+          predict,
+          model,
+          data = data,
+          type = "terminalNodes",
+          predict.all = TRUE,
+          num.threads = pv$num.threads
+        )
         storage.mode(prediction_nodes$predictions) = "integer"
         mu_sigma = .Call("c_ranger_mu_sigma", prediction_nodes$predictions, task$truth(), sigma2_threshold)
         list(model = model, mu_sigma = mu_sigma)
@@ -165,22 +187,45 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
       newdata = ordered_features(task, self)
 
       if (isTRUE(pv$se.method %in% c("ensemble_standard_deviation", "law_of_total_variance"))) {
-        prediction_nodes = mlr3misc::invoke(predict, self$model$model, data = newdata, type = "terminalNodes", .args = pv[setdiff(names(pv), "se.method")], predict.all = TRUE)
+        prediction_nodes = invoke(
+          predict,
+          self$model$model,
+          data = newdata,
+          type = "terminalNodes",
+          .args = pv[setdiff(names(pv), "se.method")],
+          predict.all = TRUE
+        )
         storage.mode(prediction_nodes$predictions) = "integer"
         method = if (pv$se.method == "ensemble_standard_deviation") 0 else 1
-        .Call("c_ranger_var", prediction_nodes$predictions, self$model$mu_sigma, method)
+        result = .Call("c_ranger_var", prediction_nodes$predictions, self$model$mu_sigma, method)
+        if (self$predict_raw) {
+          result$raw = prediction_nodes
+        }
+        result
       } else {
-        prediction = mlr3misc::invoke(predict, self$model$model, data = newdata, type = self$predict_type, quantiles = private$.quantiles, .args = pv)
+        prediction = invoke(
+          predict,
+          self$model$model,
+          data = newdata,
+          type = self$predict_type,
+          quantiles = private$.quantiles,
+          .args = pv
+        )
 
-        if (self$predict_type == "quantiles") {
+        result = if (self$predict_type == "quantiles") {
           assert_quantiles(self, quantile_response = TRUE)
           quantiles = prediction$predictions
           setattr(quantiles, "probs", private$.quantiles)
           setattr(quantiles, "response", private$.quantile_response)
-          return(list(quantiles = quantiles))
+          list(quantiles = quantiles)
+        } else {
+          list(response = prediction$predictions, se = prediction$se)
         }
 
-        list(response = prediction$predictions, se = prediction$se)
+        if (self$predict_raw) {
+          result$raw = prediction
+        }
+        result
       }
     },
 
@@ -197,7 +242,8 @@ LearnerRegrRanger = R6Class("LearnerRegrRanger",
 )
 
 #' @export
-default_values.LearnerRegrRanger = function(x, search_space, task, ...) { # nolint
+#nolint next
+default_values.LearnerRegrRanger = function(x, search_space, task, ...) {
   special_defaults = list(
     mtry = floor(sqrt(length(task$feature_names))),
     mtry.ratio = floor(sqrt(length(task$feature_names))) / length(task$feature_names),
