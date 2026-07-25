@@ -1,6 +1,6 @@
 Package: mlr3learners
 Title: Recommended Learners for 'mlr3'
-Version: 0.15.0
+Version: 0.15.1
 Authors@R: c(
     person("Michel", "Lang", , "michellang@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0001-9754-0393")),
@@ -49,8 +49,8 @@ Collate: 'aaa.R' 'LearnerClassifCVGlmnet.R' 'LearnerClassifGlmnet.R'
         'LearnerRegrXgboost.R' 'bibentries.R' 'helpers.R'
         'helpers_glmnet.R' 'helpers_ranger.R' 'helpers_xgboost.R'
         'zzz.R'
-Config/roxygen2/version: 8.0.0
-Packaged: 2026-06-09 12:49:32 UTC; marc
+Config/roxygen2/version: 8.0.0.9000
+Packaged: 2026-07-25 09:40:46 UTC; marc
 Author: Michel Lang [aut] (ORCID: <https://orcid.org/0000-0001-9754-0393>),
   Quay Au [aut] (ORCID: <https://orcid.org/0000-0002-5252-8902>),
   Stefan Coors [aut] (ORCID: <https://orcid.org/0000-0002-7465-2146>),
@@ -61,4 +61,4 @@ Author: Michel Lang [aut] (ORCID: <https://orcid.org/0000-0001-9754-0393>),
   Toby Hocking [ctb] (ORCID: <https://orcid.org/0000-0002-3146-0865>)
 Maintainer: Marc Becker <marcbecker@posteo.de>
 Repository: CRAN
-Date/Publication: 2026-06-09 14:00:08 UTC
+Date/Publication: 2026-07-25 11:40:02 UTC

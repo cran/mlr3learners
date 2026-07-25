@@ -1,6 +1,6 @@
-9d6acd83a011d603bfd0bc36c3052aba *DESCRIPTION
+ae49673b43c193db5ff80bb7be67153c *DESCRIPTION
 719210af6ff38f153bdd0b91dc085132 *NAMESPACE
-f258fc9dbc6995bc6e4835bb09b439b9 *NEWS.md
+102404bbceea9166867d8549725ebb3a *NEWS.md
 dd7f042f8aac46135d5f62b4b73fbe09 *R/LearnerClassifCVGlmnet.R
 a6fb0d078c3144a300013effd9889210 *R/LearnerClassifGlmnet.R
 ea9c114cf56673521c29d6c7e0131f99 *R/LearnerClassifKKNN.R
@@ -54,7 +54,7 @@ c0f93ce6320ea4fb5b4d175f595165af *inst/paramtest/test_paramtest_regr.ranger.R
 206bbbc9bc3fc86d3b84c10e02e13a66 *inst/paramtest/test_paramtest_regr.svm.R
 937a95126c3a1611eb120da0c48edf3e *inst/paramtest/test_paramtest_regr.xgboost.R
 64b3143b8187bbe296c1df37f6e25c00 *man/figures/logo_navbar.png
-e459814105ed0c0250847aaffbbcedce *man/mlr3learners-package.Rd
+b8ffd96be11200819353a786a4b1c37e *man/mlr3learners-package.Rd
 6efe098e0ac7a5bde0a9725fb87e8f45 *man/mlr_learners_classif.cv_glmnet.Rd
 6ad0492eb74b54e61575129888aa51b4 *man/mlr_learners_classif.glmnet.Rd
 977c75a2fd885c75c49da199719b70b1 *man/mlr_learners_classif.kknn.Rd
@@ -77,7 +77,7 @@ a4badcb0723078e284e41795d3690de8 *man/mlr_learners_regr.nnet.Rd
 98da52696a3e1feffdf5d9a2aadcd36d *man/mlr_learners_regr.svm.Rd
 185700b73fc04248d60371f17ebe4346 *man/mlr_learners_regr.xgboost.Rd
 ef3300c8c6847b7c0ff97cc1a7b95d64 *src/init.c
-6235e34bd54e3109ebe134a398fca021 *src/ranger_var.c
+dae707bb3e1422fbe2ef00b94e42a8f4 *src/ranger_var.c
 00cd1a53f9819ff6ad00193cdb8bddd8 *tests/testthat.R
 c17183ab2afaf91327294c621538b829 *tests/testthat/helper.R
 9c08066685568a3c3ceacf8ffffe800f *tests/testthat/setup.R
@@ -91,8 +91,8 @@ c2a495f499b989dfb3a8353370cb6785 *tests/testthat/test_classif_multinom.R
 7b762e92259b90ff8f442d7a816f4b2a *tests/testthat/test_classif_naive_bayes.R
 27c420ea85e3c47e436dbd03a2cd5ce1 *tests/testthat/test_classif_nnet.R
 699314b78917cc7eff559d78930615be *tests/testthat/test_classif_qda.R
-ed44d182a20c52e8cd937ed2939169c6 *tests/testthat/test_classif_ranger.R
-92462f84519637ec6f345df73887cd75 *tests/testthat/test_classif_svm.R
+e90eabbdc19d6fa07ba4d6df1db94457 *tests/testthat/test_classif_ranger.R
+e67424656c40f5db0734c08d7d0f98d7 *tests/testthat/test_classif_svm.R
 c9f074212d477cb6bc71de0a320276e2 *tests/testthat/test_classif_xgboost.R
 1e534183ad23583c36fff21c76498932 *tests/testthat/test_register.R
 0b4ff847d2180eb2941f0419ac9ae099 *tests/testthat/test_regr_cv_glmnet.R
@@ -101,7 +101,7 @@ ca88e128402ba5e7b587e13482eeb319 *tests/testthat/test_regr_glmnet.R
 38dba33e64d287218c99daa7430d65f6 *tests/testthat/test_regr_km.R
 7d02c405264cb0d2c1d76acdf1a621a6 *tests/testthat/test_regr_lm.R
 795b73f4abfbd73e9321eb58ae06ced2 *tests/testthat/test_regr_nnet.R
-5b29406de8a0fa0aaa4d767666b77c56 *tests/testthat/test_regr_ranger.R
-a589773ec59221e0bd775eab6d758a60 *tests/testthat/test_regr_svm.R
+6d35acf47ad8caff82c2ffccd2d01e0e *tests/testthat/test_regr_ranger.R
+0cbd54d32689ec9039bfff5e3b30b514 *tests/testthat/test_regr_svm.R
 601b8558eaeaee7717faf34758c733d7 *tests/testthat/test_regr_xgboost.R
 07d548477051e4983de7ac1e611d51e6 *tests/testthat/test_unload.R
