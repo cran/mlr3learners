@@ -1,3 +1,7 @@
+# mlr3learners 0.16.0
+
+* feat: `classif.xgboost` and `regr.xgboost` now implement `$best_valid_scores`.
+
 # mlr3learners 0.15.1
 
 * compatibility: mlr3 1.7.2

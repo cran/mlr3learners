@@ -1,6 +1,6 @@
-ae49673b43c193db5ff80bb7be67153c *DESCRIPTION
-719210af6ff38f153bdd0b91dc085132 *NAMESPACE
-102404bbceea9166867d8549725ebb3a *NEWS.md
+a3e5b5099ae649f2e7118eb6035feb99 *DESCRIPTION
+cef74d9e0201b591c3d0ddabdfe50f92 *NAMESPACE
+d36c1cee56c33bb02ccd4e51a73476ad *NEWS.md
 dd7f042f8aac46135d5f62b4b73fbe09 *R/LearnerClassifCVGlmnet.R
 a6fb0d078c3144a300013effd9889210 *R/LearnerClassifGlmnet.R
 ea9c114cf56673521c29d6c7e0131f99 *R/LearnerClassifKKNN.R
@@ -12,7 +12,7 @@ ffac4852f8c5329496f933b3bd71f4ee *R/LearnerClassifLogReg.R
 57dc950e57dc48d0e40c337efad0a4a2 *R/LearnerClassifQDA.R
 83e7b8325d54e93cce2f8f8715783def *R/LearnerClassifRanger.R
 af73cc1dcd8a65923aad4a2a302fb948 *R/LearnerClassifSVM.R
-f4ade66f23bafcb0536dc9115e161219 *R/LearnerClassifXgboost.R
+f4d8b00a7760b7485a47525f26001de9 *R/LearnerClassifXgboost.R
 6613e83a1218149a185151b59dbc764a *R/LearnerRegrCVGlmnet.R
 0b764575fc11c2ed8aab515a6583bf9b *R/LearnerRegrGlmnet.R
 8206789479495ca90bed22aa9965c2cf *R/LearnerRegrKKNN.R
@@ -21,7 +21,7 @@ f6ccf548444afad39f4dd13214997064 *R/LearnerRegrLM.R
 c7936df9d55bca134beff8db0e8e8807 *R/LearnerRegrNnet.R
 f436912524dc3f9b9fedc121b25666d7 *R/LearnerRegrRanger.R
 b989dc78ab3fbd1aeadd8ff3cbd67e24 *R/LearnerRegrSVM.R
-852b393a31ce310498cbc31b99a6a3c9 *R/LearnerRegrXgboost.R
+e40e6671400290e9d490a27833a397b1 *R/LearnerRegrXgboost.R
 1c35d2ccdeb9b4992fbf851c5e847fdf *R/aaa.R
 9277154ef4a26e25d61f3618d119ff9c *R/bibentries.R
 e3035f85a669041f3f21377a9351676a *R/helpers.R
@@ -66,7 +66,7 @@ e93d9b2d4e8b00aa9f335e97e97737bd *man/mlr_learners_classif.multinom.Rd
 e75aad2924e82aab0a934d72e2330f39 *man/mlr_learners_classif.qda.Rd
 ef43b17e426ecc68dbeaf7f8cd02c6b9 *man/mlr_learners_classif.ranger.Rd
 50e6dd261cdabe7b6912151025345c88 *man/mlr_learners_classif.svm.Rd
-df3ee9cd76cdcda86497b56ea71eba05 *man/mlr_learners_classif.xgboost.Rd
+8f676bc5958f99cbac1f935bb5c34d23 *man/mlr_learners_classif.xgboost.Rd
 ccb7f23cc1c9a82aa179cc68a4235750 *man/mlr_learners_regr.cv_glmnet.Rd
 8886ebbf00885112cf00fc0726e0e8d7 *man/mlr_learners_regr.glmnet.Rd
 c8eb212a99f035a7bcdc1166d3994a02 *man/mlr_learners_regr.kknn.Rd
@@ -75,7 +75,7 @@ b1ad69cfcd129d39389b73a060ea2ec6 *man/mlr_learners_regr.km.Rd
 a4badcb0723078e284e41795d3690de8 *man/mlr_learners_regr.nnet.Rd
 41bdeb2b4170b84785ff666e4648237f *man/mlr_learners_regr.ranger.Rd
 98da52696a3e1feffdf5d9a2aadcd36d *man/mlr_learners_regr.svm.Rd
-185700b73fc04248d60371f17ebe4346 *man/mlr_learners_regr.xgboost.Rd
+4130505882b0199daf79d98409aa58d1 *man/mlr_learners_regr.xgboost.Rd
 ef3300c8c6847b7c0ff97cc1a7b95d64 *src/init.c
 dae707bb3e1422fbe2ef00b94e42a8f4 *src/ranger_var.c
 00cd1a53f9819ff6ad00193cdb8bddd8 *tests/testthat.R
@@ -93,7 +93,7 @@ c2a495f499b989dfb3a8353370cb6785 *tests/testthat/test_classif_multinom.R
 699314b78917cc7eff559d78930615be *tests/testthat/test_classif_qda.R
 e90eabbdc19d6fa07ba4d6df1db94457 *tests/testthat/test_classif_ranger.R
 e67424656c40f5db0734c08d7d0f98d7 *tests/testthat/test_classif_svm.R
-c9f074212d477cb6bc71de0a320276e2 *tests/testthat/test_classif_xgboost.R
+76a659e6016893d847cb28729d70cf23 *tests/testthat/test_classif_xgboost.R
 1e534183ad23583c36fff21c76498932 *tests/testthat/test_register.R
 0b4ff847d2180eb2941f0419ac9ae099 *tests/testthat/test_regr_cv_glmnet.R
 ca88e128402ba5e7b587e13482eeb319 *tests/testthat/test_regr_glmnet.R
@@ -103,5 +103,5 @@ ca88e128402ba5e7b587e13482eeb319 *tests/testthat/test_regr_glmnet.R
 795b73f4abfbd73e9321eb58ae06ced2 *tests/testthat/test_regr_nnet.R
 6d35acf47ad8caff82c2ffccd2d01e0e *tests/testthat/test_regr_ranger.R
 0cbd54d32689ec9039bfff5e3b30b514 *tests/testthat/test_regr_svm.R
-601b8558eaeaee7717faf34758c733d7 *tests/testthat/test_regr_xgboost.R
+1e9ccc3ea093a3ede7fa32f4ca4cc70d *tests/testthat/test_regr_xgboost.R
 07d548477051e4983de7ac1e611d51e6 *tests/testthat/test_unload.R
